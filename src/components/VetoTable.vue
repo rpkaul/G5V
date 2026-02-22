@@ -1,5 +1,5 @@
 <template>
-  <v-container class="vetoInfo" fluid v-if="vetoInfo.length > 1">
+  <v-container class="vetoInfo" fluid>
     <v-data-table
       :headers="headers"
       :items="vetoInfo"
@@ -92,17 +92,7 @@ export default {
   },
   data() {
     return {
-      vetoInfo: [
-        {
-          id: -1,
-          match_id: -1,
-          team_name: "",
-          team_name_side: null,
-          map: "",
-          pick_or_veto: "",
-          side: ""
-        }
-      ],
+      vetoInfo: [],
       expanded: []
     };
   },
@@ -113,7 +103,7 @@ export default {
     async useStreamOrStaticData() {
       // Template will contain v-rows/etc like on main Team page.
       let matchData = await this.GetMatchData(this.match_id);
-      if (matchData.skip_veto === 1) {
+      if (matchData.skip_veto == 1 || matchData.skip_veto === true) {
          this.getVetoInfo(matchData);
          return;
       }
@@ -126,8 +116,10 @@ export default {
         vetoSideInformation = await this.GetStreamedVetoSidesOfMatch(
           this.match_id
         );
-        // Remove the -1 value.
-        this.vetoInfo.pop();
+        // Remove the -1 value if it exists.
+        if (this.vetoInfo.length > 0 && this.vetoInfo[0].id === -1) {
+          this.vetoInfo.pop();
+        }
         await vetoInformation.on("vetodata", this.handleVetoInfo).connect();
         await vetoSideInformation
           .on("vetosidedata", this.handleLiveSideInfo)
@@ -184,7 +176,7 @@ export default {
           let presetMaps = [];
           let mapStats = await this.GetMapStats(this.match_id);
           
-          if (matchData.skip_veto === 1 && matchData.veto_mappool) {
+          if ((matchData.skip_veto == 1 || matchData.skip_veto === true) && matchData.veto_mappool) {
              let maps = matchData.veto_mappool.trim().split(" ");
              let sides = matchData.map_sides ? matchData.map_sides.split(",") : [];
              
