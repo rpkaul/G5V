@@ -112,10 +112,17 @@ export default {
     },
     async getStreamedVetoInfo() {
       try {
+        let matchData = await this.GetMatchData(this.match_id);
         vetoInformation = await this.GetStreamedVetoesOfMatch(this.match_id);
         vetoSideInformation = await this.GetStreamedVetoSidesOfMatch(
           this.match_id
         );
+        
+        // If SSE fails (usually for guests missing auth cookies), fallback to static pulling
+        if (typeof vetoInformation === "string" || typeof vetoSideInformation === "string") {
+           this.getVetoInfo(matchData);
+           return;
+        }
         // Remove the -1 value if it exists.
         if (this.vetoInfo.length > 0 && this.vetoInfo[0].id === -1) {
           this.vetoInfo.pop();
@@ -126,6 +133,9 @@ export default {
           .connect();
       } catch (err) {
         console.error(`Error on SSE ${err}`);
+        // Fallback to static if stream connection brutally fails
+        let matchData = await this.GetMatchData(this.match_id);
+        this.getVetoInfo(matchData);
       }
     },
     async handleVetoInfo(liveVetoInfo) {
