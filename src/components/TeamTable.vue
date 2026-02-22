@@ -1,13 +1,13 @@
 <template>
-  <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);"
+  <v-data-table
     :headers="userAuthHeaders"
     :items="teamAuth"
     sort-by="calories"
-    class="elevation-4"
+    class="custom-table"
     :loading="isLoading"
     :loading-text="$t('misc.LoadText')"
     ref="TeamTable"
-    :items-per-page="5"
+    :items-per-page="10"
   >
     <template v-slot:item.tag="{ item }">
       <img
@@ -22,7 +22,7 @@
       />
     </template>
     <template v-slot:item.username="{ item }">
-      <a :href="GetSteamURL(item.steamid)" target="_blank">
+      <a :href="GetSteamURL(item.steamid)" target="_blank" class="secondary--text font-weight-bold hover-link">
         {{ item.username }}
       </a>
     </template>
@@ -36,7 +36,7 @@
     <v-spacer />
     <template v-slot:item.actions="{ item }">
       <div v-if="IsAnyAdmin(user) || user.id == teamInfo.owner_id">
-        <v-icon :disabled="isDisabled" @click="deleteMember(item)">
+        <v-icon :disabled="isDisabled" @click="deleteMember(item)" color="cyber-pink">
           mdi-delete
         </v-icon>
       </div>
@@ -64,15 +64,16 @@
       </div>
     </template>
     <template v-slot:top>
-      <v-toolbar flat>
+      <v-toolbar flat color="transparent">
         <v-toolbar-title
+          class="font-orbitron secondary--text headline"
           v-if="
             !(IsAnyAdmin(user) || user.id == teamInfo.owner_id) &&
               $vuetify.breakpoint.mdAndDown
           "
           >{{ teamInfo.name }}</v-toolbar-title
         >
-        <v-toolbar-title v-else-if="$vuetify.breakpoint.mdAndUp">
+        <v-toolbar-title v-else-if="$vuetify.breakpoint.mdAndUp" class="font-orbitron secondary--text headline">
           {{ teamInfo.name }}
         </v-toolbar-title>
         <v-divider
@@ -81,7 +82,7 @@
           inset
           vertical
         />
-        <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp">
+        <v-toolbar-title v-if="$vuetify.breakpoint.mdAndUp" class="white--text font-weight-black">
           {{ teamInfo.tag }}
         </v-toolbar-title>
         <v-divider
@@ -115,26 +116,26 @@
           vertical
         />
         <div v-if="IsAnyAdmin(user) || user.id == teamInfo.owner_id">
-          <v-icon :disabled="isDisabled" @click="deleteMember(null)">
+          <v-icon :disabled="isDisabled" @click="deleteMember(null)" color="cyber-pink">
             mdi-delete
           </v-icon>
         </div>
         <div v-else />
 
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="600px">
           <template v-slot:activator="{ on, attrs }">
             <div
               v-if="
                 IsAnyAdmin(user) ||
                   user.id == teamInfo.owner_id ||
-                  (user.id != null && teamInfo.id == -1)
+                  (user.id != -1 && teamInfo.id == -1)
               "
             >
               <v-btn
                 :disabled="isDisabled"
                 color="primary"
-                class="mb-2"
+                class="mb-2 black--text font-weight-black rounded-lg neon-btn"
                 v-bind="attrs"
                 v-on="on"
                 v-if="$vuetify.breakpoint.mdAndUp"
@@ -144,7 +145,7 @@
               <v-btn
                 :disabled="isDisabled"
                 color="primary"
-                class="mb-2"
+                class="mb-2 black--text font-weight-black rounded-lg"
                 v-bind="attrs"
                 v-on="on"
                 v-else
@@ -155,9 +156,9 @@
             </div>
             <div v-else />
           </template>
-          <v-card>
+          <v-card class="glass-card pa-4">
             <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
+              <span class="font-orbitron primary--text headline title-glow">{{ formTitle }}</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -167,6 +168,8 @@
                       <v-text-field
                         v-model="teamInfo.name"
                         :label="$t('Team.NameLabel')"
+                        filled
+                        class="custom-field"
                         :rules="[
                           v => !!v || $t('misc.Required'),
                           v =>
@@ -175,28 +178,35 @@
                         ]"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="3">
+                    <v-col cols="12" sm="6" md="4">
                       <v-select
                         :items="flags"
                         v-model="teamInfo.flag"
                         :label="$t('Team.Flag')"
+                        filled
+                        class="custom-field"
                       ></v-select>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
                         v-model="teamInfo.tag"
                         :label="$t('Team.TeamTag')"
+                        filled
+                        class="custom-field"
                         :rules="[
                           v =>
+                            !v || 
                             v.length <= 40 ||
                             $t('Team.CharacterLimit', [$t('Team.Name'), 40])
                         ]"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
+                    <v-col cols="12" sm="6" md="4" class="d-flex align-center">
                       <v-switch
                         v-model="teamInfo.public"
                         :label="$t('TeamCreate.FormPublicTeam') + '?'"
+                        color="primary"
+                        inset
                       ></v-switch>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
@@ -205,12 +215,14 @@
                         accept="image/svg+xml, image/png"
                         @change="getFile"
                         truncate-length="12"
+                        filled
+                        class="custom-field"
                       ></v-file-input>
                     </v-col>
                     <v-col cols="12" sm="4" md="4">
                       <div v-if="logoFile != null">
-                        <div center>{{ $t("TeamCreate.TeamPreview") }}</div>
-                        <img :src="logoPreview" />
+                        <div class="white--text caption font-weight-black mb-1">{{ $t("TeamCreate.TeamPreview") }}</div>
+                        <img :src="logoPreview" style="max-height: 64px; border-radius: 8px;" />
                       </div>
                     </v-col>
                   </v-row>
@@ -220,10 +232,10 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
+              <v-btn color="grey lighten-1" text @click="close" class="font-weight-black">
                 {{ $t("misc.Cancel") }}
               </v-btn>
-              <v-btn color="blue darken-1" text @click="saveTeamInfo">
+              <v-btn color="primary" depressed class="black--text font-weight-black px-6 rounded-lg" @click="saveTeamInfo">
                 {{ $t("misc.Save") }}
               </v-btn>
             </v-card-actions>
@@ -235,7 +247,7 @@
               <v-btn
                 :disabled="isMembersDisabled"
                 color="secondary"
-                class="mb-2"
+                class="mb-2 white--text font-weight-black rounded-lg"
                 v-bind="attrs"
                 v-on="on"
                 v-if="$vuetify.breakpoint.mdAndUp"
@@ -245,7 +257,7 @@
               <v-btn
                 :disabled="isMembersDisabled"
                 color="secondary"
-                class="mb-2"
+                class="mb-2 white--text font-weight-black rounded-lg"
                 v-bind="attrs"
                 v-on="on"
                 v-else
@@ -256,9 +268,9 @@
             </div>
             <div v-else />
           </template>
-          <v-card>
+          <v-card class="glass-card pa-4">
             <v-card-title>
-              <span class="headline">{{ formIndTitle }}</span>
+              <span class="font-orbitron primary--text headline title-glow">{{ formIndTitle }}</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -270,6 +282,8 @@
                         :items="steamIdList"
                         :label="$t('Team.AuthLabel')"
                         :hint="$t('Team.AuthHint')"
+                        filled
+                        class="custom-field"
                         :rules="[v => !!v || $t('misc.Required')]"
                       ></v-combobox>
                     </v-col>
@@ -279,6 +293,8 @@
                       <v-text-field
                         v-model="newAuth.name"
                         :label="$t('Team.NickLabel')"
+                        filled
+                        class="custom-field"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -287,12 +303,16 @@
                       <v-switch
                         v-model="newAuth.captain"
                         :label="$t('Team.Captain')"
+                        color="primary"
+                        inset
                       ></v-switch>
                     </v-col>
                     <v-col cols="2" sm="2" md="2">
                       <v-switch
                         v-model="newAuth.coach"
                         :label="$t('Team.Coach')"
+                        color="secondary"
+                        inset
                       ></v-switch>
                     </v-col>
                   </v-row>
@@ -302,26 +322,26 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="authClose">
+              <v-btn color="grey lighten-1" text @click="authClose" class="font-weight-black">
                 {{ $t("misc.Cancel") }}
               </v-btn>
-              <v-btn color="blue darken-1" text @click="saveTeamAuth">
+              <v-btn color="primary" depressed class="black--text font-weight-black px-6 rounded-lg" @click="saveTeamAuth">
                 {{ $t("misc.Save") }}
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
         <v-dialog v-model="deleteDialog" max-width="500px">
-          <v-card>
-            <v-card-title class="headline">
+          <v-card class="glass-card pa-4 border-glow">
+            <v-card-title class="font-orbitron cyber-pink--text headline title-glow">
               {{ $t("Team.DeleteConfirmation") }}
             </v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">
+              <v-btn color="grey lighten-1" text @click="closeDelete" class="font-weight-black">
                 {{ $t("misc.Cancel") }}
               </v-btn>
-              <v-btn color="red darken-1" text @click="deleteMemberConfirm">
+              <v-btn color="cyber-pink" depressed class="black--text font-weight-black px-6 rounded-lg" @click="deleteMemberConfirm">
                 {{ $t("misc.OK") }}
               </v-btn>
               <v-spacer></v-spacer>
@@ -543,6 +563,14 @@ export default {
         };
         if (this.teamAuth.length == 0) {
           let mainTeamInfo = res.auth_name;
+          if (typeof mainTeamInfo === 'string') {
+            try {
+              mainTeamInfo = JSON.parse(mainTeamInfo);
+            } catch (e) {
+              console.error("Failed to parse auth_name", e);
+              mainTeamInfo = null;
+            }
+          }
           this.isLoading = true;
           if (mainTeamInfo != null) {
             await Object.keys(mainTeamInfo).map(async steam_id => {
@@ -566,6 +594,11 @@ export default {
           (await this.IsAnyAdmin(this.user)) ||
           this.teamInfo.owner_id == this.user.id
         );
+
+        if (!this.teamInfo.public && this.isDisabled) {
+           this.$router.push({ name: `Home` });
+           return;
+        }
       } catch (err) {
         console.log(err);
       } finally {
@@ -586,28 +619,30 @@ export default {
     async saveTeamInfo() {
       if (this.$refs.teamForm.validate()) {
         if (this.teamInfo.id > 0) {
-          let updatedTeam = [
-            {
-              id: this.teamInfo.id,
-              name: this.teamInfo.name,
-              flag: this.teamInfo.flag,
-              tag: this.teamInfo.tag,
-              public_team: this.teamInfo.public === true ? 1 : 0,
-              logo_file: this.logoFile
-            }
-          ];
+          let updateObj = {
+            id: this.teamInfo.id,
+            name: this.teamInfo.name,
+            flag: this.teamInfo.flag,
+            tag: this.teamInfo.tag,
+            public_team: this.teamInfo.public === true || this.teamInfo.public === 1 ? 1 : 0
+          };
+          if (this.logoFile) {
+            updateObj.logo_file = this.logoFile;
+          }
+          let updatedTeam = [updateObj];
           await this.UpdateTeamInfo(updatedTeam);
         } else {
-          let newTeam = [
-            {
-              name: this.teamInfo.name,
-              flag: this.teamInfo.flag,
-              logo: null,
-              tag: this.teamInfo.tag,
-              public_team: this.teamInfo.public === true ? 1 : 0,
-              logo_file: this.logoFile
-            }
-          ];
+          let createObj = {
+            name: this.teamInfo.name,
+            flag: this.teamInfo.flag,
+            logo: null,
+            tag: this.teamInfo.tag,
+            public_team: this.teamInfo.public === true || this.teamInfo.public === 1 ? 1 : 0
+          };
+          if (this.logoFile) {
+            createObj.logo_file = this.logoFile;
+          }
+          let newTeam = [createObj];
           let newTeamId = await this.InsertTeamInfo(newTeam);
           this.$router.push({ name: `Team`, params: { id: newTeamId.id } });
         }
@@ -679,3 +714,24 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.border-bottom {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-field ::v-deep .v-input__slot {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px !important;
+}
+
+.neon-btn {
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.neon-btn:hover {
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.5);
+  transform: translateY(-2px);
+}
+</style>

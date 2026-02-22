@@ -1,18 +1,23 @@
 <template>
-  <v-card class="mx-auto" fluid>
-    <v-card-title class="title font-weight-regular justify-space-between">
-      <span>{{ currentTitle }}</span>
+  <v-card class="glass-card mx-auto overflow-hidden" flat>
+    <v-card-title class="pa-6 border-bottom align-center">
+      <div class="d-flex align-center">
+        <v-icon color="primary" class="mr-3">mdi-creation</v-icon>
+        <span class="font-orbitron primary--text headline m-0">{{ currentTitle }}</span>
+      </div>
+      <v-spacer />
       <v-avatar
-        color="primary lighten-2"
-        class="subheading white--text"
-        size="24"
+        color="primary"
+        class="black--text font-weight-black elevation-4"
+        size="32"
         v-text="step"
       ></v-avatar>
     </v-card-title>
+
     <v-window v-model="step">
       <v-form ref="newMatchForm">
         <v-window-item :value="1">
-          <v-col cols="12">
+          <div class="pa-8">
             <v-select
               v-model="selectedServer"
               :items="servers"
@@ -22,24 +27,33 @@
               :label="$t('CreateMatch.ServerLabel')"
               required
               ref="newServer"
+              filled
+              class="custom-field"
             >
               <template v-slot:item="{ item }">
                 {{ item.display_name }} {{ item.flag }}
               </template>
             </v-select>
-          </v-col>
-          <v-card-text>
-            {{ $t("CreateMatch.ServerNote") }}
-          </v-card-text>
-          <v-col cols="12">
-            <v-btn color="primary" @click="newDialog = true">
+            <div class="glass-info pa-4 rounded-lg mt-4 mb-6">
+              <v-icon x-small color="primary" class="mr-2">mdi-information-outline</v-icon>
+              <span class="white--text opacity-70 caption">
+                {{ $t("CreateMatch.ServerNote") }}
+              </span>
+            </div>
+            <v-btn 
+              depressed
+              color="secondary" 
+              class="px-6 rounded-lg font-weight-black"
+              @click="newDialog = true"
+            >
+              <v-icon left>mdi-plus</v-icon>
               {{ $t("misc.Create") }} {{ $t("CreateMatch.ServerSelect") }}
             </v-btn>
-          </v-col>
+          </div>
         </v-window-item>
 
         <v-window-item :value="2">
-          <v-col cols="12">
+          <div class="pa-8">
             <v-select
               v-model="selectedSeason"
               :items="seasons"
@@ -47,308 +61,281 @@
               item-value="id"
               :label="$t('CreateMatch.SeasonLabel')"
               ref="newServer"
+              filled
+              class="custom-field"
             />
-          </v-col>
-          <v-card-text>
-            <strong>
-              {{ $t("CreateMatch.SeasonNote") }}
-            </strong>
-          </v-card-text>
+            <div class="glass-info pa-4 rounded-lg mt-4">
+              <v-icon x-small color="secondary" class="mr-2">mdi-trophy-outline</v-icon>
+              <span class="white--text font-weight-bold caption">
+                {{ $t("CreateMatch.SeasonNote") }}
+              </span>
+            </div>
+          </div>
         </v-window-item>
 
         <v-window-item :value="3">
-          <div class="pa-4 text-center">
-            <v-select
-              v-model="newMatchData.team1_id"
-              :items="teams"
-              item-text="name"
-              item-value="id"
-              :rules="[
-                v => !!v || $t('CreateMatch.TeamRequired'),
-                () =>
-                  newMatchData.team1_id != newMatchData.team2_id ||
-                  $t('CreateMatch.TeamCannotBeEqual')
-              ]"
-              :label="$t('CreateMatch.FormTeam1')"
-              required
-              ref="teamOne"
-            />
-            <v-select
-              v-model="newMatchData.team2_id"
-              :items="teams"
-              item-text="name"
-              item-value="id"
-              :rules="[
-                v => !!v || $t('CreateMatch.TeamRequired'),
-                () =>
-                  newMatchData.team2_id != newMatchData.team1_id ||
-                  $t('CreateMatch.TeamCannotBeEqual')
-              ]"
-              :label="$t('CreateMatch.FormTeam2')"
-              required
-              ref="teamTwo"
-            />
-            <v-divider />
-            <v-row class="justify-center">
-              <v-col cols="2">
-                <v-switch
-                  v-model="newMatchData.wingman"
-                  :label="$t('CreateMatch.Wingman')"
-                  ref="wingman"
+          <div class="pa-8">
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-select
+                  v-model="newMatchData.team1_id"
+                  :items="teams"
+                  item-text="name"
+                  item-value="id"
+                  :rules="[
+                    v => !!v || $t('CreateMatch.TeamRequired'),
+                    () =>
+                      newMatchData.team1_id != newMatchData.team2_id ||
+                      $t('CreateMatch.TeamCannotBeEqual')
+                  ]"
+                  :label="$t('CreateMatch.FormTeam1')"
+                  required
+                  filled
+                  class="custom-field"
+                  ref="teamOne"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-select
+                  v-model="newMatchData.team2_id"
+                  :items="teams"
+                  item-text="name"
+                  item-value="id"
+                  :rules="[
+                    v => !!v || $t('CreateMatch.TeamRequired'),
+                    () =>
+                      newMatchData.team2_id != newMatchData.team1_id ||
+                      $t('CreateMatch.TeamCannotBeEqual')
+                  ]"
+                  :label="$t('CreateMatch.FormTeam2')"
+                  required
+                  filled
+                  class="custom-field"
+                  ref="teamTwo"
                 />
               </v-col>
             </v-row>
-            <v-divider />
-            <v-row class="justify-center">
-              <v-col cols="12">
-                <strong>{{ $t("CreateMatch.FormSeriesType") }}</strong>
-              </v-col>
-              <v-radio-group v-model="newMatchData.maps_to_win" row>
-                <v-col lg="3" sm="12">
-                  <v-radio :label="$t('CreateMatch.BestOf') + 1" :value="1" />
-                </v-col>
-                <v-col lg="3" sm="12">
-                  <v-radio :label="$t('CreateMatch.BestOf') + 2" :value="2" />
-                </v-col>
-                <v-col lg="3" sm="12">
-                  <v-radio :label="$t('CreateMatch.BestOf') + 3" :value="3" />
-                </v-col>
-                <v-col lg="3" sm="12">
-                  <v-radio :label="$t('CreateMatch.BestOf') + 5" :value="5" />
-                </v-col>
-                <v-col lg="3" sm="12" offset-lg="5">
-                  <v-radio :label="$t('CreateMatch.BestOf') + 7" :value="7" />
-                </v-col>
-              </v-radio-group>
-            </v-row>
-            <v-divider />
-            <div>
-              <strong>
+            
+            <div class="d-flex align-center justify-center my-4">
+              <v-switch
+                v-model="newMatchData.wingman"
+                :label="$t('CreateMatch.Wingman')"
+                ref="wingman"
+                color="primary"
+                inset
+              />
+            </div>
+
+            <div class="text-center mb-10">
+        <p class="white--text font-weight-black text-uppercase letter-spacing-1 mb-4">
+          {{ $t("CreateMatch.FormSeriesType") }}
+        </p>
+        <v-radio-group
+          v-model="newMatchData.maps_to_win"
+          row
+          ref="SeriesType"
+          class="justify-center mt-0"
+        >
+          <v-radio :label="$t('CreateMatch.BestOf') + 1" :value="1" color="primary" class="mx-4" />
+          <v-radio :label="$t('CreateMatch.BestOf') + 2" :value="2" color="primary" class="mx-4" />
+          <v-radio :label="$t('CreateMatch.BestOf') + 3" :value="3" color="primary" class="mx-4" />
+          <v-radio :label="$t('CreateMatch.BestOf') + 5" :value="5" color="primary" class="mx-4" />
+          <v-radio :label="$t('CreateMatch.BestOf') + 7" :value="7" color="primary" class="mx-4" />
+        </v-radio-group>
+      </div>
+
+            <div class="text-center mb-6">
+              <h3 class="font-orbitron secondary--text subtitle-1 mb-4">
                 {{ $t("CreateMatch.FormMapPool") }}
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" x-small fab icon>
-                      <v-icon>mdi-information</v-icon>
-                    </v-btn>
+                    <v-icon v-bind="attrs" v-on="on" size="18" class="ml-2">mdi-information-outline</v-icon>
                   </template>
                   <span>{{ $t("CreateMatch.FormMapExplanation") }}</span>
                 </v-tooltip>
-              </strong>
+              </h3>
+              <v-row no-gutters class="justify-center">
+                <v-col cols="6" sm="4" md="2" v-for="maps in MapList" :key="maps.id">
+                  <v-checkbox
+                    v-model="newMatchData.map_pool"
+                    :value="maps.map_name"
+                    :label="maps.map_display_name"
+                    dense
+                    color="secondary"
+                    class="mt-0"
+                    :rules="[
+                      () => newMatchData.map_pool.length > 0 || $t('CreateMatch.MapChoiceError'),
+                      () => newMatchData.map_pool.length > newMatchData.maps_to_win - 1 || $t('CreateMatch.MapNotEnough')
+                    ]"
+                  />
+                </v-col>
+              </v-row>
             </div>
-            <v-row class="justify-center">
-              <v-col lg="1" sm="12" v-for="maps in MapList" :key="maps.id">
-                <v-checkbox
-                  v-model="newMatchData.map_pool"
-                  :value="maps.map_name"
-                  :label="maps.map_display_name"
-                  :rules="[
-                    () =>
-                      newMatchData.map_pool.length > 0 ||
-                      $t('CreateMatch.MapChoiceError'),
-                    () =>
-                      newMatchData.map_pool.length >
-                        newMatchData.maps_to_win - 1 ||
-                      $t('CreateMatch.MapNotEnough')
-                  ]"
-                />
-              </v-col>
-            </v-row>
-            <v-divider />
-            <v-row class="justify-center">
-              <v-col lg="3" md="12" sm="12">
-                {{ $t("CreateMatch.PlayersPerTeam") }}
-                <v-slider
-                  v-model="newMatchData.players_per_team"
-                  single-line
-                  :min="1"
-                  :max="5"
-                  :thumb-size="24"
-                  thumb-label
-                  ticks="always"
-                  tick-size="4"
-                  step="1"
-                />
-              </v-col>
-              <v-col lg="3" md="12" sm="12">
-                {{ $t("CreateMatch.MinPlayersReady") }}
-                <v-slider
-                  v-model="newMatchData.min_players_to_ready"
-                  single-line
-                  :min="1"
-                  :max="5"
-                  :thumb-size="24"
-                  thumb-label
-                  ticks="always"
-                  tick-size="4"
-                  step="1"
-                />
-              </v-col>
-              <v-col lg="3" md="12" sm="12">
-                {{ $t("CreateMatch.SpectatorsToReady") }}
-                <v-slider
-                  v-model="newMatchData.min_spectators_to_ready"
-                  single-line
-                  :min="0"
-                  :thumb-size="24"
-                  thumb-label
-                  ticks="always"
-                  tick-size="4"
-                  step="1"
-                />
-              </v-col>
-            </v-row>
-            <v-divider />
-            <v-col cols="12" class="text-center text-h6">
-              {{ $t("CreateMatch.Spectators") }}
-            </v-col>
-            <v-row class="justify-center">
-              <v-col cols="12">
-                <v-combobox
-                  v-model="newMatchData.spectators"
-                  :label="$t('CreateMatch.Spectators')"
-                  ref="matchspecs"
-                  :hint="$t('Team.AuthHint')"
-                  multiple
-                  chips
-                  deletable-chips
-                />
-              </v-col>
-            </v-row>
-            <v-divider />
-            <v-row class="justify-center">
-              <v-col cols="2">
-                <v-switch
-                  v-model="newMatchData.skip_veto"
-                  :label="$t('CreateMatch.SkipVeto')"
-                  ref="skipveto"
-                />
-              </v-col>
-            </v-row>
-            <v-row class="justify-center" v-if="newMatchData.skip_veto">
-              <v-col
-                lg="3"
-                md="12"
-                sm="12"
-                v-for="(entity, index) in newMatchData.maps_to_win"
-                :key="index"
-              >
-                <v-col class="text-left text-h6">
-                  {{
-                    $t("CreateMatch.MapSides", {
-                      map:
-                        newMatchData.map_pool[index] == null
-                          ? entity
-                          : newMatchData.map_pool[index]
-                    })
-                  }}
-                </v-col>
-                <v-radio-group row v-model="newMatchData.map_sides[index]">
-                  <v-col lg="12" sm="12" align-self="center">
-                    <v-radio
-                      :label="$t('CreateMatch.MapSidesTeam1CT')"
-                      :value="'team1_ct'"
-                    />
-                  </v-col>
-                  <v-col lg="12" sm="12" align-self="center">
-                    <v-radio
-                      :label="$t('CreateMatch.MapSidesTeam2CT')"
-                      :value="'team1_t'"
-                    />
-                  </v-col>
-                  <v-col lg="12" sm="12" align-self="center">
-                    <v-radio
-                      :label="$t('CreateMatch.MapSidesKnife')"
-                      :value="'knife'"
-                    />
-                  </v-col>
-                </v-radio-group>
-              </v-col>
-            </v-row>
-            <v-row class="justify-center">
-              <v-radio-group
-                v-model="newMatchData.side_type"
-                row
-                class="justify-center"
-              >
-                <v-col lg="4" sm="13" align-self="center">
-                  <v-radio
-                    :label="$t('CreateMatch.KnifeDefault')"
-                    :value="'standard'"
+
+            <div class="glass-panel pa-6 rounded-lg mb-6">
+              <v-row>
+                <v-col cols="12" md="4">
+                  <span class="caption secondary--text text-uppercase font-weight-black mb-2 d-block">{{ $t("CreateMatch.PlayersPerTeam") }}</span>
+                  <v-slider
+                    v-model="newMatchData.players_per_team"
+                    :min="1" :max="5"
+                    thumb-label
+                    ticks="always"
+                    color="secondary"
                   />
                 </v-col>
-                <v-col lg="4" sm="12" align-self="center">
-                  <v-radio
-                    :label="$t('CreateMatch.KnifeNever')"
-                    :value="'never_knife'"
+                <v-col cols="12" md="4">
+                  <span class="caption secondary--text text-uppercase font-weight-black mb-2 d-block">{{ $t("CreateMatch.MinPlayersReady") }}</span>
+                  <v-slider
+                    v-model="newMatchData.min_players_to_ready"
+                    :min="1" :max="5"
+                    thumb-label
+                    ticks="always"
                   />
                 </v-col>
-                <v-col lg="4" sm="12" align-self="center">
-                  <v-radio
-                    :label="$t('CreateMatch.KnifeAlways')"
-                    :value="'always_knife'"
+                <v-col cols="12" md="4">
+                  <span class="caption secondary--text text-uppercase font-weight-black mb-2 d-block">{{ $t("CreateMatch.SpectatorsToReady") }}</span>
+                  <v-slider
+                    v-model="newMatchData.min_spectators_to_ready"
+                    :min="0" :max="5"
+                    thumb-label
+                    ticks="always"
                   />
                 </v-col>
+              </v-row>
+            </div>
+            <v-combobox
+              v-model="newMatchData.spectators"
+              :label="$t('CreateMatch.Spectators')"
+              multiple
+              chips
+              deletable-chips
+              filled
+              class="custom-field mb-4"
+              :hint="$t('Team.AuthHint')"
+            />
+
+            <div class="d-flex align-center justify-center mb-6">
+              <v-switch
+                v-model="newMatchData.skip_veto"
+                :label="$t('CreateMatch.SkipVeto')"
+                color="secondary"
+                inset
+              />
+            </div>
+
+            <div v-if="newMatchData.skip_veto" class="text-center mb-6">
+              <v-row class="justify-center">
+                <v-col
+                  cols="12" sm="6" md="4"
+                  v-for="(entity, index) in newMatchData.maps_to_win"
+                  :key="index"
+                  class="glass-panel ma-2 rounded-lg pa-4"
+                >
+                  <div class="font-orbitron primary--text mb-2">
+                    {{ $t("CreateMatch.MapSides", { map: newMatchData.map_pool[index] || (index+1) }) }}
+                  </div>
+                  <v-radio-group v-model="newMatchData.map_sides[index]" class="mt-0">
+                    <v-radio :label="team1Name + ' ' + $t('CreateMatch.MapSidesCT')" value="team1_ct" />
+                    <v-radio :label="team2Name + ' ' + $t('CreateMatch.MapSidesCT')" value="team2_ct" />
+                    <v-radio :label="$t('CreateMatch.MapSidesKnife')" value="knife" />
+                  </v-radio-group>
+                </v-col>
+              </v-row>
+            </div>
+
+            <v-row class="justify-center">
+              <v-radio-group v-model="newMatchData.side_type" row class="justify-center">
+                <v-radio :label="$t('CreateMatch.KnifeDefault')" value="standard" color="primary" class="mx-2" />
+                <v-radio :label="$t('CreateMatch.KnifeNever')" value="never_knife" color="primary" class="mx-2" />
+                <v-radio :label="$t('CreateMatch.KnifeAlways')" value="always_knife" color="primary" class="mx-2" />
               </v-radio-group>
             </v-row>
-            <v-divider />
-            <v-col cols="12" class="text-center text-h6">
-              <strong>{{ $t("CreateMatch.ConvarTitle") }}</strong>
-            </v-col>
-            <v-row class="justify-center">
-              <v-col cols="12">
-                <v-combobox
-                  v-model="newMatchData.cvars"
-                  :label="$t('CreateMatch.FormCVARS')"
-                  ref="CVARs"
-                  multiple
-                  chips
-                  deletable-chips
-                />
-              </v-col>
-            </v-row>
+
+            <v-combobox
+              v-model="newMatchData.cvars"
+              :label="$t('CreateMatch.FormCVARS')"
+              ref="CVARs"
+              :hint="$t('Seasons.CvarHint')"
+              multiple
+              chips
+              filled
+              class="custom-field mb-6"
+              deletable-chips
+            />
+
+            <div class="d-flex justify-center mt-6">
+              <v-btn
+                color="primary"
+                depressed
+                class="black--text font-weight-black px-12 py-6 rounded-lg elevation-8 neon-btn"
+                @click="callCreateMatch"
+                :loading="isLoading"
+              >
+                <v-icon left>mdi-sword-cross</v-icon>
+                {{ $t("Matches.CreateMatch") }}
+              </v-btn>
+            </div>
           </div>
         </v-window-item>
       </v-form>
     </v-window>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-btn :disabled="step === 1" text @click="checkValidation(false)">
+
+    <v-divider class="border-glow" />
+
+    <v-card-actions class="pa-6">
+      <v-btn 
+        :disabled="step === 1" 
+        text 
+        @click="checkValidation(false)"
+        class="grey--text font-weight-black"
+      >
+        <v-icon left>mdi-chevron-left</v-icon>
         {{ $t("misc.Back") }}
       </v-btn>
       <v-spacer />
       <v-btn
-        color="primary"
-        depressed
-        @click="callCreateMatch"
         v-if="step === 3"
+        color="primary"
+        class="black--text font-orbitron font-weight-black px-8 py-6 elevation-8 neon-btn-active"
+        @click="callCreateMatch"
         :loading="isLoading"
       >
-        {{ $t("misc.Create") }}
+        <v-icon left size="20">mdi-sword</v-icon>
+        {{ $t("Matches.CreateMatch") }}
       </v-btn>
       <v-btn
         v-else
-        :disabled="step === 3"
         color="primary"
+        class="black--text font-weight-black px-10"
         depressed
         @click="checkValidation"
       >
         {{ $t("misc.Next") }}
+        <v-icon right>mdi-chevron-right</v-icon>
       </v-btn>
     </v-card-actions>
+
     <ServerDialog
       v-model="newDialog"
       :serverInfo="newServer"
       :title="$t('ServerCreate.NewServerTitle')"
       @is-new-server="ReloadServers"
     />
+
     <v-bottom-sheet v-model="responseSheet" inset persistent>
-      <v-sheet class="text-center" height="200px">
-        <v-btn class="mt-6" text color="success" @click="GoToMatch">
-          {{ $t("misc.Close") }}
-        </v-btn>
-        <div class="my-3">
+      <v-sheet class="text-center glass-card pa-8 border-top" height="200px">
+        <div class="white--text title m-b6">
           {{ response }}
         </div>
+        <v-btn 
+          depressed
+          color="primary" 
+          class="black--text font-weight-black px-8 mt-4 rounded-lg"
+          @click="GoToMatch"
+        >
+          {{ $t("misc.Close") }}
+        </v-btn>
       </v-sheet>
     </v-bottom-sheet>
   </v-card>
@@ -407,10 +394,40 @@ export default {
         default:
           return this.$t("CreateMatch.FormError");
       }
+    },
+    team1Name() {
+      if (this.newMatchData.team1_id) {
+        const team = this.teams.find(t => t.id === this.newMatchData.team1_id);
+        return team ? team.name : "Team 1";
+      }
+      return "Team 1";
+    },
+    team2Name() {
+      if (this.newMatchData.team2_id) {
+        const team = this.teams.find(t => t.id === this.newMatchData.team2_id);
+        return team ? team.name : "Team 2";
+      }
+      return "Team 2";
     }
   },
   watch: {
+    "newMatchData.team1_id"(val) {
+      if (val) {
+        const team = this.teams.find(t => t.id === val);
+        if (team) this.newMatchData.team1_name = team.name;
+      }
+    },
+    "newMatchData.team2_id"(val) {
+      if (val) {
+        const team = this.teams.find(t => t.id === val);
+        if (team) this.newMatchData.team2_name = team.name;
+      }
+    },
     selectedSeason(val) {
+      if (val === -1) {
+        this.selectedSeasonObject = {};
+        return;
+      }
       let arrIndex = this.seasons
         .map(obj => {
           return obj.id;
@@ -420,8 +437,8 @@ export default {
     },
     step(val) {
       if (val == 3) {
-        if (this.selectedSeasonObject.cvars != null) {
-          let seasonCvars = this.selectedSeasonObject.cvars;
+        if (this.selectedSeasonObject && this.selectedSeasonObject.cvars != null) {
+          let seasonCvars = {...this.selectedSeasonObject.cvars};
           this.newMatchData.min_players_to_ready =
             seasonCvars.min_players_to_ready == null
               ? 5
@@ -445,15 +462,15 @@ export default {
               ? false
               : true;
           this.newMatchData.map_pool =
-            seasonCvars.map_pool.length < 1
+            !seasonCvars.map_pool || seasonCvars.map_pool.length < 1
               ? []
               : seasonCvars.map_pool.trim().split(" ");
           this.newMatchData.spectators =
-            seasonCvars.spectators.length < 1
+            !seasonCvars.spectators || seasonCvars.spectators.length < 1
               ? null
               : seasonCvars.spectators.trim().split(" ");
           this.newMatchData.map_sides =
-            seasonCvars.map_sides.length < 1
+            !seasonCvars.map_sides || seasonCvars.map_sides.length < 1
               ? []
               : seasonCvars.map_sides.trim().split(" ");
           this.newMatchData.wingman =
@@ -491,8 +508,8 @@ export default {
     else {
       let tmpPublicTeams = await this.GetAllTeams();
       this.teams = await this.GetMyTeams();
+      if (typeof this.teams === "string") this.teams = [];
       tmpPublicTeams.forEach(async team => {
-        if (typeof this.teams === "string") this.teams = [];
         if (team.public_team == 1) this.teams.push(team);
       });
     }
@@ -517,7 +534,7 @@ export default {
             " " +
             this.user.id
         );
-      this.selectedServer = this.servers[arrIndex].id;
+      if (arrIndex !== -1) this.selectedServer = this.servers[arrIndex].id;
       this.newServer = {};
     },
     checkValidation(moveForward = true) {
@@ -527,7 +544,8 @@ export default {
       }
     },
     async callCreateMatch() {
-      if (this.$refs.newMatchForm.validate()) {
+      const form = this.$refs.newMatchForm;
+      if (form.validate()) {
         this.isLoading = true;
         const splitStr = x => {
           const y = x.split(" ");
@@ -538,7 +556,7 @@ export default {
             key = y[0].trim();
             y.splice(0, 1);
             val = y.join(" ").trim();
-            if (!isNaN(val)) val = parseInt(val);
+            if (!isNaN(val) && val !== "") val = parseInt(val);
             retVal = { [key]: val };
           } catch (error) {
             retVal = { [key]: "" };
@@ -595,10 +613,53 @@ export default {
     GoToMatch() {
       this.responseSheet = !this.responseSheet;
       this.response = "";
-      console.log(this.newMatchId);
       if (this.newMatchId != null)
         this.$router.push({ name: `Match`, params: { id: this.newMatchId } });
     }
   }
 };
 </script>
+
+<style scoped>
+.glass-card {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: blur(15px);
+}
+
+.border-bottom {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.border-top {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-info {
+  background: rgba(0, 242, 255, 0.05);
+  border: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-field ::v-deep .v-input__slot {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px !important;
+}
+
+.neon-btn-active {
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.4) !important;
+  &:hover {
+    box-shadow: 0 0 30px rgba(0, 242, 255, 0.6) !important;
+    transform: translateY(-2px);
+  }
+}
+
+.opacity-70 { opacity: 0.7; }
+.m-b6 { margin-bottom: 24px; }
+.border-glow { border-color: rgba(0, 242, 255, 0.1) !important; }
+</style>

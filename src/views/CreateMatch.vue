@@ -1,8 +1,15 @@
 <template>
-  <v-container class="match" fluid>
-    <v-row class="pb-5">
-      <v-col cols="12" class="flex-grow-1">
-        <v-card>
+  <v-container class="glass-container" fluid>
+    <div class="glass-header mb-8">
+      <v-icon color="primary" size="32" class="mr-3">mdi-plus-circle-outline</v-icon>
+      <h1 class="font-orbitron primary--text headline m-0">
+        {{ $t("Navbar.CreateMatch") }}
+      </h1>
+    </div>
+
+    <v-row>
+      <v-col cols="12">
+        <v-card class="glass-card">
           <NewMatchForm :user="user" v-if="user.id != -1" />
         </v-card>
       </v-col>

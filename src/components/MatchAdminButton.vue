@@ -1,68 +1,117 @@
 <template>
-  <v-container class="admin-button">
-    <v-menu bottom offset-y open-on-hover>
-      <template v-slot:activator="{ on, attrs }">
+  <v-container class="admin-button pa-0" fluid>
+    <template v-if="layout === 'menu'">
+      <v-menu bottom offset-y open-on-hover>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            class="primary darken-1"
+            v-bind="attrs"
+            v-on="on"
+            :loading="isLoading"
+            :disabled="isLoading"
+          >
+            {{ $t("MatchAdmin.AdminTools") }}
+          </v-btn>
+        </template>
+        <v-list v-if="user.super_admin == 1">
+          <v-list-item
+            v-for="(item, i) in superAdminItems"
+            :key="i"
+            @click="item.apiCall()"
+          >
+            <v-list-item-icon v-if="item.icon"><v-icon color="primary">{{ item.icon }}</v-icon></v-list-item-icon>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+        <v-list v-else>
+          <v-list-item
+            v-for="(item, i) in items"
+            :key="i"
+            @click="item.apiCall()"
+          >
+            <v-list-item-icon v-if="item.icon"><v-icon color="primary">{{ item.icon }}</v-icon></v-list-item-icon>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </template>
+
+    <template v-else-if="layout === 'tiles'">
+      <div class="control-grid">
         <v-btn
-          class="primary darken-1"
-          v-bind="attrs"
-          v-on="on"
+          v-for="btn in dashboardActions"
+          :key="btn.title"
+          :color="btn.color"
+          class="action-tile flex-grow-1 mb-4 mx-2"
+          @click="btn.apiCall()"
           :loading="isLoading"
           :disabled="isLoading"
+          height="80"
+          width="140"
         >
-          {{ $t("MatchAdmin.AdminTools") }}
-        </v-btn>
-      </template>
-      <v-list v-if="user.super_admin == 1">
-        <v-list-item
-          v-for="(item, i) in superAdminItems"
-          :key="i"
-          @click="item.apiCall()"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-      <v-list v-else>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          @click="item.apiCall()"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-      <v-bottom-sheet v-model="responseSheet" inset persistent>
-        <v-sheet class="text-center" height="200px">
-          <v-btn
-            class="mt-6"
-            text
-            color="success"
-            @click="
-              responseSheet = !responseSheet;
-              response = '';
-              $emit('force-the-reload', true);
-            "
-          >
-            close
-          </v-btn>
-          <div class="my-3">
-            {{ response }}
+          <div class="d-flex flex-column align-center">
+            <v-icon size="28" class="mb-1">{{ btn.icon }}</v-icon>
+            <span class="text-caption font-weight-black text-uppercase">{{ btn.title }}</span>
           </div>
-        </v-sheet>
-      </v-bottom-sheet>
-    </v-menu>
+        </v-btn>
+        
+        <!-- More Tools for Tiles Mode -->
+        <v-menu offset-y top transition="slide-y-transition" v-if="superAdminItems.length > 5">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              text
+              color="primary"
+              class="font-weight-bold mx-2"
+              height="80"
+            >
+              <v-icon left>mdi-dots-vertical</v-icon>
+              {{ $t("MatchAdmin.AdminTools") }}
+            </v-btn>
+          </template>
+          <v-list class="glass-card">
+            <v-list-item v-for="(item, i) in superAdminItems.slice(5)" :key="i" @click="item.apiCall()">
+              <v-list-item-icon v-if="item.icon"><v-icon color="primary">{{ item.icon }}</v-icon></v-list-item-icon>
+              <v-list-item-title class="font-weight-bold">{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
+    </template>
+
+    <v-bottom-sheet v-model="responseSheet" inset persistent>
+      <v-sheet class="text-center glass-card" height="200px">
+        <v-btn
+          class="mt-6"
+          text
+          color="success"
+          @click="
+            responseSheet = !responseSheet;
+            response = '';
+            $emit('force-the-reload', true);
+          "
+        >
+          close
+        </v-btn>
+        <div class="my-3 white--text headline">
+          {{ response }}
+        </div>
+      </v-sheet>
+    </v-bottom-sheet>
     <v-dialog v-model="cancelDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron cyber-pink--text headline title-glow">
             {{ $t("MatchAdmin.CancelMatchConfirm") }}
           </span>
         </v-card-title>
-        <v-card-actions>
+        <v-card-actions class="pa-6">
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="cancelDialog = false">
+          <v-btn color="grey lighten-1" text @click="cancelDialog = false" class="font-weight-bold">
             {{ $t("misc.No") }}
           </v-btn>
-          <v-btn color="red darken-1" text @click="cancelCurrentMatch()">
+          <v-btn color="cyber-pink" depressed class="black--text font-weight-black px-6 rounded-lg" @click="cancelCurrentMatch()">
             {{ $t("misc.Yes") }}
           </v-btn>
         </v-card-actions>
@@ -71,24 +120,26 @@
     <v-dialog v-model="restartDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron primary--text headline title-glow">
             {{ $t("MatchAdmin.MatchRestartInfo") }}
           </span>
         </v-card-title>
-        <v-card-actions>
+        <v-card-actions class="pa-6">
           <v-spacer></v-spacer>
           <v-btn
             :disabled="isLoading"
-            color="blue darken-1"
+            color="grey lighten-1"
             text
             @click="restartDialog = false"
+            class="font-weight-bold"
           >
             {{ $t("misc.No") }}
           </v-btn>
           <v-btn
             :disabled="isLoading"
-            color="red darken-1"
-            text
+            color="primary"
+            depressed
+            class="black--text font-weight-black px-6 rounded-lg"
             @click="sendRestartMatch()"
           >
             {{ $t("misc.Yes") }}
@@ -99,8 +150,8 @@
     <v-dialog v-model="addDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">
-            Add Player to Team or Spectator
+          <span class="font-orbitron primary--text headline title-glow">
+            Add Player to {{ matchInfo.team1_name }} / {{ matchInfo.team2_name }}
           </span>
         </v-card-title>
         <v-card-text>
@@ -137,23 +188,24 @@
             </v-container>
           </v-form>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="darken-1" text @click="addDialog = false">
+        <v-card-actions class="pa-6">
+          <v-btn color="grey lighten-1" text @click="addDialog = false" class="font-weight-bold">
             {{ $t("misc.Cancel") }}
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="darken-1" text @click="addPlayerToServer('spec')">
+          <v-btn color="secondary" depressed class="black--text font-weight-black px-4 rounded-lg" @click="addPlayerToServer('spec')">
             {{ $t("MatchAdmin.AddToSpec") }}
           </v-btn>
-          <v-btn color="blue darken-1" text @click="addPlayerToServer('team1')">
-            {{ $t("MatchAdmin.AddTeam1") }}
+          <v-btn color="primary" depressed class="black--text font-weight-black px-4 rounded-lg" @click="addPlayerToServer('team1')">
+            Add to {{ matchInfo.team1_name }}
           </v-btn>
           <v-btn
-            color="yellow darken-1"
-            text
+            color="primary"
+            depressed
+            class="black--text font-weight-black px-4 rounded-lg"
             @click="addPlayerToServer('team2')"
           >
-            {{ $t("MatchAdmin.AddTeam2") }}
+            Add to {{ matchInfo.team2_name }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -161,7 +213,7 @@
     <v-dialog v-model="forfeitDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron cyber-pink--text headline title-glow">
             {{ $t("MatchAdmin.ForfeitConfirm") }}
           </span>
         </v-card-title>
@@ -174,34 +226,37 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pa-6">
           <v-spacer></v-spacer>
           <v-btn
-            color="darken-1"
+            color="grey lighten-1"
             text
             @click="forfeitDialog = false"
             :disabled="isLoading"
             :loading="isLoading"
+            class="font-weight-bold"
           >
             {{ $t("misc.Cancel") }}
           </v-btn>
           <v-btn
-            color="blue darken-1"
-            text
+            color="primary"
+            depressed
             @click="forfeitCurrentMatch(1)"
             :disabled="isLoading"
             :loading="isLoading"
+            class="black--text font-weight-black px-6 rounded-lg"
           >
-            {{ $t("MatchAdmin.ForfeitWinner1") }}
+            Winner: {{ matchInfo.team1_name }}
           </v-btn>
           <v-btn
-            color="yellow darken-1"
-            text
+            color="primary"
+            depressed
             @click="forfeitCurrentMatch(2)"
             :disabled="isLoading"
             :loading="isLoading"
+            class="black--text font-weight-black px-6 rounded-lg"
           >
-            {{ $t("MatchAdmin.ForfeitWinner2") }}
+            Winner: {{ matchInfo.team2_name }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -209,7 +264,7 @@
     <v-dialog v-model="rconDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron primary--text headline title-glow">
             {{ $t("MatchAdmin.RCONDialog") }}
           </span>
         </v-card-title>
@@ -232,12 +287,12 @@
             </v-container>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pa-6">
           <v-spacer></v-spacer>
-          <v-btn color="darken-1" text @click="rconDialog = false">
+          <v-btn color="grey lighten-1" text @click="rconDialog = false" class="font-weight-bold">
             {{ $t("misc.Cancel") }}
           </v-btn>
-          <v-btn color="primary darken-1" text @click="sendRconCommand()">
+          <v-btn color="primary" depressed class="black--text font-weight-black px-6 rounded-lg" @click="sendRconCommand()">
             {{ $t("MatchAdmin.SendRCON") }}
           </v-btn>
         </v-card-actions>
@@ -246,7 +301,7 @@
     <v-dialog v-model="backupDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron primary--text headline title-glow">
             {{ $t("MatchAdmin.LoadBackupFile") }}
           </span>
         </v-card-title>
@@ -268,21 +323,21 @@
             </v-container>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pa-6">
           <v-spacer></v-spacer>
-          <v-btn color="darken-1" text @click="backupDialog = false">
+          <v-btn color="grey lighten-1" text @click="backupDialog = false" class="font-weight-bold">
             {{ $t("misc.Cancel") }}
           </v-btn>
-          <v-btn color="primary darken-1" text @click="sendBackupRestore()">
+          <v-btn color="primary" depressed class="black--text font-weight-black px-6 rounded-lg" @click="sendBackupRestore()">
             {{ $t("MatchAdmin.Restore") }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog shake v-model="serverChangeDialog" persistent max-width="600px">
-      <v-card color="lighten-4">
+      <v-card>
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron primary--text headline title-glow">
             {{ $t("MatchAdmin.ChangeServer") }}
           </span>
         </v-card-title>
@@ -321,12 +376,12 @@
             </v-container>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pa-6">
           <v-spacer></v-spacer>
-          <v-btn color="darken-1" text @click="serverChangeDialog = false">
+          <v-btn color="grey lighten-1" text @click="serverChangeDialog = false" class="font-weight-bold">
             {{ $t("misc.Cancel") }}
           </v-btn>
-          <v-btn color="red darken-1" text @click="sendServerChange()">
+          <v-btn color="primary" depressed class="black--text font-weight-black px-6 rounded-lg" @click="sendServerChange()">
             {{ $t("misc.Change") }}
           </v-btn>
         </v-card-actions>
@@ -338,7 +393,11 @@
 export default {
   props: {
     matchInfo: Object,
-    user: Object
+    user: Object,
+    layout: {
+      type: String,
+      default: "menu" // menu or tiles
+    }
   },
   data() {
     return {
@@ -394,6 +453,8 @@ export default {
       return [
         {
           title: this.$t("MatchAdmin.PauseMatch"),
+          icon: "mdi-pause",
+          color: "warning",
           apiCall: async () => {
             this.isLoading = true;
             this.response = await this.PauseMatch(this.matchInfo.id);
@@ -403,6 +464,8 @@ export default {
         },
         {
           title: this.$t("MatchAdmin.UnpauseMatch"),
+          icon: "mdi-play",
+          color: "success",
           apiCall: async () => {
             this.isLoading = true;
             this.response = await this.UnpauseMatch(this.matchInfo.id);
@@ -411,13 +474,23 @@ export default {
           }
         },
         {
+          title: this.$t("MatchAdmin.MatchRestart"),
+          icon: "mdi-refresh",
+          color: "info",
+          apiCall: () => {
+            this.restartDialog = true;
+          }
+        },
+        {
           title: this.$t("MatchAdmin.AddPlayerToServer"),
+          icon: "mdi-account-plus",
           apiCall: () => {
             this.addDialog = true;
           }
         },
         {
           title: this.$t("MatchAdmin.ListBackups"),
+          icon: "mdi-history",
           apiCall: async () => {
             let res = await this.GetMatchBackups(this.matchInfo.id);
             if (res.response) {
@@ -430,25 +503,24 @@ export default {
           }
         },
         {
-          title: this.$t("MatchAdmin.MatchRestart"),
-          apiCall: () => {
-            this.restartDialog = true;
-          }
-        },
-        {
           title: this.$t("MatchAdmin.CancelMatch"),
+          icon: "mdi-cancel",
+          color: "error",
           apiCall: () => {
             this.cancelDialog = true;
           }
         },
         {
           title: this.$t("MatchAdmin.ForfeitMatch"),
+          icon: "mdi-flag-variant",
+          color: "error",
           apiCall: () => {
             this.forfeitDialog = true;
           }
         },
         {
           title: this.$t("MatchAdmin.ChangeServer"),
+          icon: "mdi-server-network",
           apiCall: async () => {
             try {
               let res = await this.GetAllAvailableServers();
@@ -477,6 +549,8 @@ export default {
       return [
         {
           title: this.$t("MatchAdmin.PauseMatch"),
+          icon: "mdi-pause",
+          color: "warning",
           apiCall: async () => {
             this.isLoading = true;
             this.response = await this.PauseMatch(this.matchInfo.id);
@@ -486,6 +560,8 @@ export default {
         },
         {
           title: this.$t("MatchAdmin.UnpauseMatch"),
+          icon: "mdi-play",
+          color: "success",
           apiCall: async () => {
             this.isLoading = true;
             this.response = await this.UnpauseMatch(this.matchInfo.id);
@@ -494,13 +570,30 @@ export default {
           }
         },
         {
+          title: this.$t("MatchAdmin.MatchRestart"),
+          icon: "mdi-refresh",
+          color: "info",
+          apiCall: () => {
+            this.restartDialog = true;
+          }
+        },
+        {
+          title: this.$t("MatchAdmin.SendRCON"),
+          icon: "mdi-console",
+          apiCall: () => {
+            this.rconDialog = true;
+          }
+        },
+        {
           title: this.$t("MatchAdmin.AddPlayerToServer"),
+          icon: "mdi-account-plus",
           apiCall: () => {
             this.addDialog = true;
           }
         },
         {
           title: this.$t("MatchAdmin.ListBackups"),
+          icon: "mdi-history",
           apiCall: async () => {
             let res = await this.GetMatchBackups(this.matchInfo.id);
             if (res.response) {
@@ -514,30 +607,23 @@ export default {
         },
         {
           title: this.$t("MatchAdmin.CancelMatch"),
+          icon: "mdi-cancel",
+          color: "error",
           apiCall: () => {
             this.cancelDialog = true;
           }
         },
         {
           title: this.$t("MatchAdmin.ForfeitMatch"),
+          icon: "mdi-flag-variant",
+          color: "error",
           apiCall: () => {
             this.forfeitDialog = true;
           }
         },
         {
-          title: this.$t("MatchAdmin.MatchRestart"),
-          apiCall: () => {
-            this.restartDialog = true;
-          }
-        },
-        {
-          title: this.$t("MatchAdmin.SendRCON"),
-          apiCall: () => {
-            this.rconDialog = true;
-          }
-        },
-        {
           title: this.$t("MatchAdmin.ChangeServer"),
+          icon: "mdi-server-network",
           apiCall: async () => {
             try {
               let res = await this.GetAllAvailableServers();
@@ -561,6 +647,13 @@ export default {
           }
         }
       ];
+    },
+    dashboardActions() {
+      // Pick top 4 or 5 actions for the dashboard tiles
+      if (this.user.super_admin == 1) {
+        return this.superAdminItems.slice(0, 5);
+      }
+      return this.items.slice(0, 5);
     }
   },
   methods: {
@@ -692,3 +785,30 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.control-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.action-tile {
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.action-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
+  filter: brightness(1.2);
+}
+
+.glass-card {
+  background: rgba(22, 22, 26, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+</style>

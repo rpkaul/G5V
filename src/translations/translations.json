@@ -1,7 +1,8 @@
 {
   "en": {
     "Navbar": {
-      "title": "LOTGaming",
+      "title": "LOTGaming Matches",
+      "BrandingName": "LOTGaming",
       "AllMatches": "All Matches",
       "MyMatches": "My Matches",
       "MyTeams": "My Teams",
@@ -10,12 +11,16 @@
       "CreateTeam": "Create Team",
       "MyServers": "My Servers",
       "AddServer": "Add New Server",
-      "AllSeasons": "All Tournaments",
-      "MySeasons": "My Tournaments",
+      "AllSeasons": "All Seasons",
+      "MySeasons": "My Seasons",
       "Logout": "Logout",
       "DarkMode": "Toggle Dark Mode",
       "PlayerLeader": "Player Leaderboard",
-      "Home": "Home"
+      "Home": "Home",
+      "Welcome": "Welcome",
+      "Teams": "Teams",
+      "Matches": "Matches",
+      "Seasons": "Seasons"
     },
     "Login": {
       "title": "Login/Register",
@@ -70,12 +75,13 @@
       "MessageSendCommandSuccess": "Successfully sent command.",
       "StartTime": "Start:",
       "EndTime": "End:",
-      "Connect": "Connect to Server!",
-      "GOTVConnect": "Connect to GOTV!"
+      "Connect": "Connect!",
+      "GOTVConnect": "Connect to GOTV!",
+      "LiveMatches": "Live Matches"
     },
     "CreateMatch": {
       "FormServer": "Select a Server",
-      "FormSeason": "Select a Tournament",
+      "FormSeason": "Select a Season",
       "ServerSelect": "Server",
       "FormDetail": "Fill Out Match Details",
       "FormError": "You should not be here!",
@@ -88,11 +94,11 @@
       "FormMapPool": "Map Pool",
       "FormMapExplanation": "If you wish to have more maps, visit your user profile to add/edit/remove maps!",
       "FormCVARS": "CVARs",
-      "MessageRegisterSuccess": "Successfully Created match.",
+      "MessageRegisterSuccess": "Successfully registered match.",
       "ServerLabel": "Server",
       "ServerNote": "Not finding what you're looking for? Create it then select it!",
-      "SeasonLabel": "Tournament",
-      "SeasonNote": "No Tournament to select? Then just press next!",
+      "SeasonLabel": "Season",
+      "SeasonNote": "No season to select? Then just press next!",
       "TeamRequired": "A team is required.",
       "TeamCannotBeEqual": "Teams cannot face each other!",
       "BestOf": "Best of ",
@@ -112,6 +118,7 @@
       "MapSides": "Map Side For Map {map}",
       "MapSidesTeam1CT": "Team 1 Starts CT",
       "MapSidesTeam2CT": "Team 2 Starts CT",
+      "MapSidesCT": "Starts CT",
       "MapSidesKnife": "Teams Knife For Sides",
       "Wingman": "Wingman Match?"
     },
@@ -128,11 +135,11 @@
       "RoundsPlayed": "Rounds Played",
       "Rating": "Rating",
       "Suicides": "Suicides",
-      "ADR": "ADR",
+      "ADR": "Average Damage Per Round",
       "BombPlants": "Bomb Plants",
       "BombDefuses": "Bomb Defuses",
       "KDR": "KDR",
-      "FPR": "FPR",
+      "FPR": "Frags Per Round",
       "User": "User",
       "TeamName": "Team",
       "NoStatFound": "No stats are found for the current match.",
@@ -156,22 +163,22 @@
     },
     "Seasons": {
       "Title": "Seasons/Tournaments",
-      "New": "New Tournament",
+      "New": "New Season",
       "NotFinished": "Ongoing",
       "Name": "Name",
       "Dates": "Date Range",
-      "DateTitle": "Tournament Dates",
+      "DateTitle": "Season Dates",
       "CvarHint": "These values will be brought as defaults in EVERY match.",
       "ID": "ID",
       "StartTitle": "Start Date (YYYY/MM/DD)",
       "EndTitle": "End Date (YYYY/MM/DD)",
       "NewFormTitle": "Create New Season/Tournament",
       "EditFormTitle": "Edit Season/Tournament Info",
-      "SeasonCreated": "Tournament inserted successfully!",
-      "SeasonUpdated": "Tournament updated successfully!",
-      "SeasonDeleted": "Tournament deleted successfully!",
-      "DeleteConfirmation": "Are you sure you wish to remove this Tournament?",
-      "DeleteExplain": "This will remove all match associations to the Tournament.",
+      "SeasonCreated": "Season inserted successfully!",
+      "SeasonUpdated": "Season updated successfully!",
+      "SeasonDeleted": "Season deleted successfully!",
+      "DeleteConfirmation": "Are you sure you wish to remove this season?",
+      "DeleteExplain": "This will remove all match associations to the season.",
       "ImportSeason": "Import",
       "Import": "Import From Challonge",
       "ImportExplanation": "Tournament ID (e.g. 10230) or URL (e.g. 'single_elim' for challonge.com/single_elim). If assigned to a subdomain, URL format must be :subdomain-:tournament_url (e.g. 'test-mytourney' for test.challonge.com/mytourney)",
@@ -187,12 +194,15 @@
       "Team2": "Team 2",
       "Status": "Status",
       "Server": "Server",
-      "Owner": "Host",
+      "Owner": "Owner",
       "DeleteButton": "Delete My Cancelled Matches",
-      "Versus": "vs"
+      "Versus": "vs",
+      "CreateMatch": "Create Match",
+      "Finished": "Finished",
+      "Cancelled": "Cancelled"
     },
     "Metrics": {
-      "Get5Metrics": "Metrics",
+      "Get5Metrics": "Get5 Metrics",
       "Users": "Registered Users",
       "Teams": "Saved Teams",
       "Matches": "Matches Created",
@@ -200,7 +210,7 @@
       "Servers": "Public Servers added",
       "Maps": "Maps with stats saved",
       "Players": "Unique Players",
-      "Seasons": "Tournament"
+      "Seasons": "Seasons"
     },
     "MyServers": {
       "NoServersFound": "No servers found.",
@@ -226,7 +236,7 @@
     },
     "ServerCreate": {
       "InfoWillNotBeExposed": "Your server information will not be exposed to other users.",
-      "Get5Help": "Make sure your server is online and has the latest version of get5 installed.<br>See <a href=\"http://splewis.github.io/get5/latest/installation/\">the installation guide</a> for help installing the get5. PLEASE ENSURE sv_logecho = 1 IS SET ON THE SERVER AND 'log on'",
+      "Get5Help": "For CS2 servers, we recommend using <a href=\"https://shobhit-pathak.github.io/MatchZy/get5/\">MatchZy</a> with its Get5 compatibility mode. Ensure your server is online and MatchZy is correctly configured.<br>For legacy CS:GO servers, ensure the Get5 plugin is installed and sv_logecho is enabled.",
       "FormDisplayName": "Display Name",
       "FormServerIP": "Host Name",
       "FormServerHint": "Can be a URL as well.",
@@ -234,7 +244,7 @@
       "FormRCONPassword": "RCON Password",
       "FormGOTVPort": "GOTV Port",
       "FormPublicServer": "Public Server?",
-      "MessageRegisterSuccess": "Successfully created server.",
+      "MessageRegisterSuccess": "Successfully registered server.",
       "MessageeEditSuccess": "Successfully edited server.",
       "NewServerTitle": "New Server",
       "EditServerTitle": "Edit Server",
@@ -263,7 +273,7 @@
       "NewInfo": "New Team Info",
       "NewPlayer": "New Player",
       "EditPlayer": "Edit Player",
-      "NewTag": "",
+      "NewTag": "NEW",
       "Captain": "Team Captain?",
       "WhatIsCaptain": "The first captain to appear on this list will be able to cast vetoes in game. If no captain is selected, the first user on the team list is considered captain.",
       "CharacterLimit": "Team {0} must be less than {1} characters.",
@@ -308,7 +318,7 @@
       "FormCountryFlag": "Country Flag",
       "FormPlayer": "Player",
       "FormPublicTeam": "Public Team",
-      "MessageRegisterSuccess": "Successfully created team.",
+      "MessageRegisterSuccess": "Successfully registered team.",
       "MessageeEditSuccess": "Successfully edited team.",
       "TeamLogo": "Logo",
       "TeamPreview": "Preview:"
@@ -358,16 +368,19 @@
       "PLeader": "Player Leaderboard",
       "TWins": "Total Wins",
       "LessThan": "Date two must be greater than or equal to date one.",
-      "Import": "Import"
+      "Import": "Import",
+      "View": "VIEW"
     },
     "Footer": {
       "company": "Phlex Plexico",
-      "metrics": "Metrics"
+      "metrics": "Metrics",
+      "powered": "Powered by Steam"
     }
   },
   "fr": {
     "Navbar": {
-      "title": "LOTGaming",
+      "title": "LOTGaming Matches",
+      "BrandingName": "LOTGaming",
       "AllMatches": "Tous les matchs",
       "MyMatches": "Mes matchs",
       "MyTeams": "Mon équipe",
@@ -381,7 +394,11 @@
       "Logout": "Déconnexion",
       "DarkMode": "Action le mode sombre",
       "PlayerLeader": "Classement des joueurs",
-      "Home": "Accueil"
+      "Home": "Accueil",
+      "Welcome": "Bienvenue",
+      "Teams": "Équipes",
+      "Matches": "Matchs",
+      "Seasons": "Saisons"
     },
     "Login": {
       "title": "S'identifier / S'incrire",
@@ -437,7 +454,8 @@
       "StartTime": "Début : ",
       "EndTime": "Fin : ",
       "Connect": "Connexion !",
-      "GOTVConnect": "Connexion à la GOTV!"
+      "GOTVConnect": "Connexion à la GOTV!",
+      "LiveMatches": "Matchs en direct"
     },
     "CreateMatch": {
       "FormServer": "Selectionner un serveur",
@@ -478,6 +496,7 @@
       "MapSides": "Côté de la map pour la carte {map}",
       "MapSidesTeam1CT": "Equipe 1 démarre en CT",
       "MapSidesTeam2CT": "Equipe 2 démarre en CT",
+      "MapSidesCT": "démarre en CT",
       "MapSidesKnife": "Coté décidé par un round au couteau",
       "Wingman": "Match d'ailier ?"
     },
@@ -498,7 +517,7 @@
       "BombPlants": "Bombe(s) posées",
       "BombDefuses": "Bombe(s) désamorcées",
       "KDR": "KDR",
-      "FPR": "FPR",
+      "FPR": "Frag Par Round",
       "User": "Utilisateur",
       "TeamName": "Equipe",
       "NoStatFound": "Pas de statistiques trouvées pour le match en cours.",
@@ -548,14 +567,17 @@
     "Matches": {
       "YourMatches": "Vos matchs",
       "AllMatches": "Tous les matchs",
-      "MatchID": "Match Room",
+      "MatchID": "Match ID",
       "Team1": "Equipe 1",
       "Team2": "Equipe 2",
       "Status": "Status",
       "Server": "Serveur",
       "Owner": "Propriétaire",
       "DeleteButton": "Supprimer mes matchs annulés",
-      "Versus": "vs"
+      "Versus": "vs",
+      "CreateMatch": "Créer un Match",
+      "Finished": "Terminé",
+      "Cancelled": "Annulé"
     },
     "Metrics": {
       "Get5Metrics": "Get5 Metrics",
@@ -592,7 +614,7 @@
     },
     "ServerCreate": {
       "InfoWillNotBeExposed": "Les informations de votre serveur ne seront pas exposées aux autres utilisateurs.",
-      "Get5Help": "Assurez-vous que votre serveur est en ligne et que la dernière version de get5 est installée.<br>Voir <a href=\"http://splewis.github.io/get5/latest/installation/\">le guide d'installation</a> pour l'aide à l'installation de get5. VEUILLEZ VOUS ASSURER que sv_logecho = 1 EST FIXE SUR LE SERVEUR ET que 'log on' est installé.",
+      "Get5Help": "Pour les serveurs CS2, nous recommandons d'utiliser <a href=\"https://shobhit-pathak.github.io/MatchZy/get5/\">MatchZy</a> avec son mode de compatibilité Get5. Assurez-vous que votre serveur est en ligne.<br>Pour les anciens serveurs CS:GO, assurez-vous que le plugin Get5 est installé et sv_logecho activé.",
       "FormDisplayName": "Nom affiché",
       "FormServerIP": "Nom d'hôte",
       "FormServerHint": "Peut aussi être une URL.",
@@ -611,7 +633,7 @@
       "RecentMatches": "Matchs récents",
       "MessageDeleteSuccess": "Equipe supprimée avec succés.",
       "DeleteConfirm": "Êtes-vous sûr de vouloir supprimer cette équipe ?",
-      "ID": "Team Page",
+      "ID": "Team ID",
       "Name": "Nom",
       "TeamTag": "Tag",
       "Flag": "Drapeau",
@@ -629,7 +651,7 @@
       "NewInfo": "New Team Info",
       "NewPlayer": "Nouveau Joueur",
       "EditPlayer": "Modifier le joueur",
-      "NewTag": "",
+      "NewTag": "NEW",
       "Captain": "Capitaine de l'équipe ?",
       "WhatIsCaptain": "Le premier capitaine à figurer sur cette liste pourra opposer son veto en jeu. Si aucun capitaine n'est sélectionné, le premier utilisateur de la liste d'équipe est considéré comme capitaine.",
       "CharacterLimit": "Equipe {0} doit être inférieur à {1} caractères.",
@@ -724,16 +746,19 @@
       "PLeader": "Classement des joueurs",
       "TWins": "Total de victoires",
       "LessThan": "La date 2 doit être supérieur ou égale à la date 1.",
-      "Import": "Importer"
+      "Import": "Importer",
+      "View": "VOIR"
     },
     "Footer": {
-      "company": "LOTGaming",
-      "metrics": "Metrics"
+      "company": "Phlex Plexico",
+      "metrics": "Metrics",
+      "powered": "Powered by Steam"
     }
   },
   "jp": {
     "Navbar": {
-      "title": "LOTGaming",
+      "title": "LOTGaming Matches",
+      "BrandingName": "LOTGaming",
       "AllMatches": "マッチリスト",
       "MyMatches": "あなたのマッチ",
       "MyTeams": "あなたのチーム",
@@ -747,7 +772,11 @@
       "Logout": "ログアウト",
       "DarkMode": "ダークモードを切り替えます",
       "PlayerLeader": "プレイヤーリーダーボード",
-      "Home": "ホーム"
+      "Home": "ホーム",
+      "Welcome": "ようこそ",
+      "Teams": "チーム",
+      "Matches": "マッチ",
+      "Seasons": "シーズン"
     },
     "Login": {
       "title": "ログイン/登録",
@@ -803,7 +832,8 @@
       "StartTime": "スタート:",
       "EndTime": "終り:",
       "Connect": "つなげろ！",
-      "GOTVConnect": "GOTVに接続"
+      "GOTVConnect": "GOTVに接続",
+      "LiveMatches": "ライブマッチ"
     },
     "CreateMatch": {
       "FormServer": "サーバー",
@@ -837,10 +867,11 @@
       "ReadyOptions": "プレーヤーの準備ができているオプション",
       "SpectatorsList": "観客リスト",
       "Spectators": "観客",
-      "SkipVeto": "ゲーム内拒否権をスキップ？",
-      "KnifeDefault": "デフォルト",
-      "KnifeNever": "ネバーナイフ",
-      "KnifeAlways": "常にナイフ",
+      "MapSides": "マップ {map} のマップサイド",
+      "MapSidesTeam1CT": "チーム1はCTとしてスタート",
+      "MapSidesTeam2CT": "チーム2はCTとしてスタート",
+      "MapSidesCT": "はCTとしてスタート",
+      "MapSidesKnife": "サイド決定のためにナイフで戦う",
       "Wingman": "ウィングマン・マッチ？"
     },
     "PlayerStats": {
@@ -860,7 +891,7 @@
       "BombPlants": "爆弾プラント",
       "BombDefuses": "Bomb Defuses",
       "KDR": "ＫＤＲ",
-      "FPR": "FPR",
+      "FPR": "Frags Per Round",
       "User": "ユーザー",
       "TeamName": "チーム",
       "NoStatFound": "現在の試合のスタッツは見つかりませんでした。",
@@ -917,7 +948,10 @@
       "Server": "サーバ",
       "Owner": "オーナー",
       "DeleteButton": "キャンセルされたマッチを削除する",
-      "Versus": "対"
+      "Versus": "対",
+      "CreateMatch": "マッチを作成する",
+      "Finished": "終了",
+      "Cancelled": "キャンセルされました"
     },
     "Metrics": {
       "Get5Metrics": "Get5 メトリクス",
@@ -954,7 +988,7 @@
     },
     "ServerCreate": {
       "InfoWillNotBeExposed": "あなたのサーバー情報は他のユーザーには公開されません。",
-      "Get5Help": "サーバーがオンラインであり、最新バージョンのget5がインストールされていることを確認してください。<br>get5のインストールについては、<a href=\"http://splewis.github.io/get5/latest/installation/\">インストールガイド</a>を参照してください。 サーバーでsv_logecho = 1が設定され、'log on'が設定されていることを確認してください。",
+      "Get5Help": "CS2サーバーの場合、Get5互換モードを備えた <a href=\"https://shobhit-pathak.github.io/MatchZy/get5/\">MatchZy</a> の使用をお勧めします。 サーバーがオンラインで、MatchZyが正しく設定されていることを確認してください。<br>従来のCS:GOサーバーの場合、Get5プラグインがインストールされ、sv_logechoが有効になっていることを確認してください。",
       "FormDisplayName": "表示名",
       "FormServerIP": "ホスト名",
       "FormServerHint": "URLにすることもできます。",
@@ -1084,11 +1118,13 @@
       "PLeader": "プレイヤーリーダーボード",
       "TWins": "合計勝利数",
       "LessThan": "日付2は日付1以上でなければなりません。",
-      "Import": "輸入"
+      "Import": "輸入",
+      "View": "詳細"
     },
     "Footer": {
-      "company": "LOTGaming",
-      "metrics": "メトリック"
+      "company": "Phlex Plexico",
+      "metrics": "メトリック",
+      "powered": "Powered by Steam"
     }
   }
 }

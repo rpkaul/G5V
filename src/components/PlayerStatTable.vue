@@ -1,105 +1,91 @@
 <template>
-  <v-container class="statistics" fluid>
+  <v-container class="statistics pa-0" fluid>
     <div v-if="playerstats.length > 0">
-      <v-container style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);border-radius:20px;margin-bottom:20px;padding:20px;"
+      <v-container
         v-for="(playerMapStats, index) in playerstats"
         :key="playerMapStats[0].id"
+        class="mb-8 pa-0"
       >
-        <v-container class="mapinfo" fluid>
-          <div
-            class="text-subtitle-2 mapInfo lot-score"
-            v-if="mapStats[index] != null"
-            align="center"
-          >
-            {{ mapStats[index].score }} - {{ mapStats[index].map }}
+        <v-card class="glass-card pa-6 overflow-hidden custom-map-card">
+          <!-- Top Centered Match Info block -->
+          <div class="text-center mb-6">
+            <h2 class="font-orbitron white--text mb-2 text-h5" v-if="mapStats[index] != null">
+              <span class="primary--text">Score:</span> {{ mapStats[index].score }} <span class="mx-2">-</span> <span class="primary--text">Map:</span> {{ mapStats[index].map }}
+            </h2>
+            <div class="grey--text font-weight-bold caption" v-if="mapStats[index] != null">
+              <div v-if="mapStats[index].start != null">Map Start: {{ mapStats[index].start }}</div>
+              <div v-if="mapStats[index].end != null">Map End: {{ mapStats[index].end }}</div>
+            </div>
           </div>
-          <div
-            class="text-subtitle-2 mapInfo"
-            v-if="
-              mapStats[index] != null && mapStats[index].start != null
-            "
-            align="center"
-          >
-            {{ mapStats[index].start }}
-          </div>
-          <div
-            class="text-subtitle-2 mapInfo"
-            v-if="
-              mapStats[index] != null && mapStats[index].end != null
-            "
-            align="center"
-          >
-            {{ mapStats[index].end }}
-          </div>
-          <div
-            class="text-subtitle-2 mapInfo"
-            v-if="
-              mapStats[index] != null && mapStats[index].demo != null
-            "
-            align="center"
-          >
+          <div class="text-center mb-4" v-if="mapStats[index] != null && mapStats[index].demo != null">
             <v-btn
               small
-              color="secondary"
+              color="white"
+              outlined
+              class="font-weight-bold"
+              rounded
               :href="apiUrl + '/demo/' + mapStats[index].demo"
             >
+              <v-icon left small>mdi-download</v-icon>
               {{ $t("PlayerStats.Download") }}
             </v-btn>
           </div>
-          <div
-            class="text-subtitle-2 mapInfo"
-            v-if="
-              mapStats[index] != null && mapStats[index].end == null
-            "
-            align="left"
-          ></div>
-        </v-container>
-        <v-data-table
-          item-key="id"
-          class="elevation-1"
-          :items-per-page="12"
-          :loading="isLoading"
-          :loading-text="$t('misc.LoadText')"
-          :headers="headers"
-          :items="playerMapStats"
-          sort-by="kills"
-          sort-desc
-          ref="PlayerStats"
-          group-by="Team"
-          show-group-by
-          hide-default-footer
-          show-expand
-        >
-          <template v-slot:item.name="{ item }">
-            <router-link :to="{ path: '/user/' + item.steam_id }">
-              {{ item.name }}
-            </router-link>
-          </template>
-          <template v-slot:item.Team="{ item }">
-            {{ item.Team.slice(2) }}
-          </template>
-          <template v-slot:expanded-item="{ item }" class="text-center">
-            <td :colspan="headers.length">
-              <v-data-table
-                item-key="id"
-                class="elevation-1"
-                :headers="additionalHeaders"
-                hide-default-footer
-                dense
-                :key="item.id"
-                :items="[item]"
-                disable-sort
-                :colspan="headers.length"
-              />
-            </td>
-          </template>
-        </v-data-table>
+
+          <!-- The Glass Table for the Map -->
+          <v-data-table
+            item-key="id"
+            class="custom-table"
+            :items-per-page="12"
+            :loading="isLoading"
+            :loading-text="$t('misc.LoadText')"
+            :headers="headers"
+            :items="playerMapStats"
+            sort-by="kills"
+            sort-desc
+            ref="PlayerStats"
+            group-by="Team"
+            show-group-by
+            hide-default-footer
+            show-expand
+          >
+            <!-- Group Header (Team Name styling) -->
+            <template v-slot:group.header="{ items, isOpen, toggle }">
+              <th :colspan="headers.length" style="background: transparent; border-bottom: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;" @click="toggle">
+                <span class="secondary--text font-weight-bold font-orbitron subtitle-1 text-uppercase letter-spacing-1">
+                  Team: {{ items[0].Team.slice(2) }}
+                </span>
+              </th>
+            </template>
+            
+            <template v-slot:item.name="{ item }">
+              <router-link :to="{ path: '/user/' + item.steam_id }" class="text-decoration-none font-weight-bold">
+                <span :class="item.Team.slice(0, 1) === '1' ? 'secondary--text' : 'primary--text'">{{ item.name }}</span>
+              </router-link>
+            </template>
+            <template v-slot:item.Team="{ item }">
+              <span class="white--text font-weight-bold">{{ item.Team.slice(2) }}</span>
+            </template>
+            <template v-slot:expanded-item="{ item }">
+              <td :colspan="headers.length" class="pa-0">
+                <v-data-table
+                  item-key="id"
+                  class="custom-table"
+                  style="background: rgba(0,0,0,0.4);"
+                  :headers="additionalHeaders"
+                  hide-default-footer
+                  dense
+                  :items="[item]"
+                  disable-sort
+                />
+              </td>
+            </template>
+          </v-data-table>
+        </v-card>
       </v-container>
     </div>
-    <div v-else align="center">
-      <strong>
-        {{ $t("PlayerStats.NoStatFound") }}
-      </strong>
+    <div v-else align="center" class="pa-8">
+      <v-icon x-large color="grey darken-2" class="mb-4">mdi-flask-empty-outline</v-icon>
+      <h3 class="grey--text text--darken-1">{{ $t("PlayerStats.NoStatFound") }}</h3>
     </div>
   </v-container>
 </template>
@@ -113,7 +99,7 @@ export default {
     return {
       playerstats: [],
       isLoading: true,
-      mapStats: [{}],
+      mapStats: [],
       allowRefresh: false,
       timeoutId: -1,
       isFinished: false,
@@ -163,10 +149,10 @@ export default {
           value: "hsp",
           groupable: false
         },
-		{
+        {
           text: this.$t("PlayerStats.UtilDamage"),
           value: "util_damage",
-	  groupable: false
+          groupable: false
         },
         {
           text: this.$t("PlayerStats.MVP"),
@@ -194,10 +180,6 @@ export default {
     additionalHeaders() {
       return [
         {
-          text: this.$t("PlayerStats.Suicides"),
-          value: "suicides"
-        },
-        {
           text: this.$t("PlayerStats.Assists"),
           value: "assists"
         },
@@ -214,8 +196,8 @@ export default {
           value: "friendlies_flashed"
         },
         {
-          text: this.$t("PlayerStats.KAST"),
-          value: "kast"
+          text: this.$t("PlayerStats.Suicides"),
+          value: "suicides"
         },
         {
           text: this.$t("PlayerStats.KnifeKills"),
@@ -228,6 +210,10 @@ export default {
         {
           text: this.$t("PlayerStats.BombDefuses"),
           value: "bomb_defuses"
+        },
+        {
+          text: this.$t("PlayerStats.KAST"),
+          value: "kast"
         },
         {
           text: this.$t("PlayerStats.ContribScore"),
@@ -250,7 +236,6 @@ export default {
       }
     },
     async retrieveStatsHelper(serverResponse, matchData) {
-      console.log(matchData.team1_score + " " + matchData.team2_score);
       if (typeof serverResponse == "string") return;
       let allMapIds = [];
       let totalMatchTeam = [];
@@ -372,7 +357,8 @@ export default {
         if (!this.mapStats[index]) {
           this.$set(this.mapStats, index, {});
         }
-        this.$set(this.mapStats[index], 'score', "Score: " +
+
+        this.$set(this.mapStats[index], 'score',
           singleMapStat.team1_score +
           " " +
           this.GetScoreSymbol(
@@ -381,44 +367,38 @@ export default {
           ) +
           " " +
           singleMapStat.team2_score);
-        this.$set(this.mapStats[index], 'start', "Map Start: " + new Date(singleMapStat.start_time).toLocaleString());
+        this.$set(this.mapStats[index], 'start', new Date(singleMapStat.start_time).toLocaleString());
         this.$set(this.mapStats[index], 'end', singleMapStat.end_time == null ?
           null :
-          "Map End: " + new Date(singleMapStat.end_time).toLocaleString());
-        this.$set(this.mapStats[index], 'map', "Map: " + singleMapStat.map_name);
+          new Date(singleMapStat.end_time).toLocaleString());
+        this.$set(this.mapStats[index], 'map', singleMapStat.map_name);
         this.$set(this.mapStats[index], 'demo', singleMapStat.demoFile);
       });
       if (matchData.end_time != null) this.isFinished = true;
     }
   }
 };
-
-
-
-
 </script>
-<style>
-.theme--dark.v-data-table {
-  background-color: unset;
+
+<style scoped>
+/* Ensure data-table is completely transparent inside the card */
+.custom-map-card .custom-table {
+  background: transparent !important;
+  box-shadow: none !important;
 }
-.theme--dark.v-data-table .v-row-group__header, .theme--dark.v-data-table .v-row-group__summary {
-  background: unset;
-}
-.text-subtitle-2.mapInfo.lot-score {
-  font-size: 1.4rem !important;
-  margin-bottom: 20px;
+
+.custom-map-card .custom-table .v-data-table-header th {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
   font-weight: bold;
 }
-</style>
-<style lang="scss">
-.theme--dark.v-data-table .v-row-group__header, .theme--dark.v-data-table .v-row-group__summary {
-  .text-start {
-	font-weight: bold;
-	text-align: center !important;
-  font-size: 1.05rem;
-  }
+
+.custom-map-card .custom-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
 }
-.ma-0.v-btn.v-btn--icon.v-btn--round.theme--dark.v-size--small {
-  display:none;
+
+.custom-map-card .custom-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 </style>

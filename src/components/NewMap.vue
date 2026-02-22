@@ -9,27 +9,33 @@
           sm="12"
           md="12"
           lg="3"
+          class="d-flex"
         >
-          <div class="justify-space-between">
-            <v-card dense elevation="3" min-height="">
-              <v-card-title> {{ mapInfo.map_display_name }} </v-card-title>
-              <v-card-subtitle
-                >{{ mapInfo.map_name }}
+          <v-card class="glass-card d-flex flex-column" style="width: 100%;">
+            <div class="flex-grow-1">
+              <v-card-title class="font-orbitron primary--text"> {{ mapInfo.map_display_name }} </v-card-title>
+              <v-card-subtitle class="pb-0">
+                <div class="text-caption mb-2">{{ mapInfo.map_name }}</div>
                 <v-checkbox
                   v-model="mapInfo.enabled"
                   :label="$t('User.MapEnabled')"
                   readonly
                   disabled
+                  dense
+                  hide-details
+                  class="custom-checkbox mt-0 pe-none"
+                  color="primary"
                 />
               </v-card-subtitle>
-              <v-card-actions class="pt-0">
+            </div>
+            <v-card-actions class="d-flex pa-4 pt-2 mt-auto">
                 <v-btn
-                  class="ml-2 mt-3"
+                  class="neon-btn-small"
                   fab
                   icon
-                  height="40px"
-                  right
-                  width="40px"
+                  height="36px"
+                  width="36px"
+                  color="error"
                   @click="
                     selectedMap = mapInfo;
                     deleteDialog = true;
@@ -38,12 +44,12 @@
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
                 <v-btn
-                  class="ml-2 mt-3"
+                  class="neon-btn-small ml-2"
                   fab
                   icon
-                  height="40px"
-                  left
-                  width="40px"
+                  height="36px"
+                  width="36px"
+                  color="secondary"
                   @click="mapInfo.reveal = true"
                 >
                   <v-icon>mdi-pencil</v-icon>
@@ -52,32 +58,42 @@
               <v-expand-transition>
                 <v-card
                   v-if="mapInfo.reveal"
-                  class="transition-fast-in-fast-out v-card--reveal pt-0"
+                  class="transition-fast-in-fast-out v-card--reveal d-flex flex-column pt-0 glass-card"
+                  style="height: 100%; top: 0; left: 0; background: #111115 !important; z-index: 10;"
                 >
-                  <v-card-title>
+                  <v-card-title class="font-orbitron secondary--text pb-2">
                     {{ $t("User.MapEdit") }}
                   </v-card-title>
-                  <v-card-subtitle>
+                  <v-card-subtitle class="flex-grow-1 pb-0">
                     <v-text-field
                       v-model="mapInfo.map_display_name"
                       :label="$t('User.MapDisplayName')"
                       dense
+                      filled
+                      class="custom-field mb-2"
+                      hide-details
                     />
                     <v-text-field
                       v-model="mapInfo.map_name"
                       :label="$t('User.MapName')"
                       dense
+                      filled
+                      class="custom-field mb-2"
+                      hide-details
                     />
                     <v-checkbox
                       v-model="mapInfo.enabled"
                       :label="$t('User.MapEnabled')"
                       dense
+                      hide-details
                     />
                   </v-card-subtitle>
-                  <v-card-actions class="pt-0">
+                  <v-card-actions class="pa-4 pt-2 mt-auto">
                     <v-btn
-                      text
-                      color="teal accent-4"
+                      depressed
+                      block
+                      color="secondary"
+                      class="neon-btn-small"
                       @click="
                         UpdateMapInfo(mapInfo);
                         mapInfo.reveal = false;
@@ -89,14 +105,13 @@
                 </v-card>
               </v-expand-transition>
             </v-card>
-          </div>
         </v-col>
       </v-row>
     </v-item-group>
     <v-dialog v-model="deleteDialog" max-width="600px">
-      <v-card>
+      <v-card class="glass-card">
         <v-card-title>
-          <span class="headline">
+          <span class="headline font-orbitron primary--text">
             {{ $t("User.MapDeleteTitle") }}
           </span>
         </v-card-title>
@@ -104,7 +119,7 @@
           <v-form ref="addPlayerForm">
             <v-container>
               <v-row>
-                <v-col cols="12">
+                <v-col cols="12" class="white--text">
                   {{
                     $t("User.MapDeleteExplain", {
                       map: selectedMap.map_display_name
@@ -115,23 +130,24 @@
             </v-container>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="darken-1" text @click="deleteDialog = false">
+          <v-btn color="grey lighten-1" text @click="deleteDialog = false">
             {{ $t("misc.Cancel") }}
           </v-btn>
-          <v-btn color="primary" text @click="DeleteMapInfo(selectedMap)">
+          <v-btn color="primary" depressed class="neon-btn-small" @click="DeleteMapInfo(selectedMap)">
             {{ $t("misc.Confirm") }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-row>
-      <v-col cols="12" sm="12" md="12" lg="3">
-        <div class="justify-space-between">
-          <v-card dense elevation="3">
-            <v-card-title> {{ $t("User.MapNew") }} </v-card-title>
-            <v-card-actions class="pt-0">
+      <v-col cols="12" sm="12" md="12" lg="3" class="d-flex">
+        <v-card class="glass-card d-flex flex-column" style="width: 100%;">
+          <div class="flex-grow-1">
+            <v-card-title class="font-orbitron primary--text"> {{ $t("User.MapNew") }} </v-card-title>
+          </div>
+          <v-card-actions class="pt-0 mt-auto">
               <v-btn
                 class="ml-2 mt-3"
                 fab
@@ -147,32 +163,50 @@
             <v-expand-transition>
               <v-card
                 v-if="newMapReveal"
-                class="transition-fast-in-fast-out v-card--reveal pt-0"
+                class="transition-fast-in-fast-out v-card--reveal d-flex flex-column pt-0 glass-card"
+                style="height: 100%; top: 0; left: 0; background: #111115 !important; z-index: 10;"
               >
-                <v-card-title>
+                <v-card-title class="font-orbitron secondary--text pb-2">
                   {{ $t("User.MapNew") }}
                 </v-card-title>
-                <v-card-subtitle>
+                <v-card-subtitle class="flex-grow-1 pb-0">
                   <v-text-field
                     v-model="newMap.map_display_name"
                     :label="$t('User.MapDisplayName')"
                     dense
+                    filled
+                    class="custom-field mb-2"
+                    hide-details
                   />
                   <v-text-field
                     v-model="newMap.map_name"
                     :label="$t('User.MapName')"
                     dense
+                    filled
+                    class="custom-field mb-2"
+                    hide-details
                   />
                   <v-checkbox
                     v-model="newMap.enabled"
                     :label="$t('User.MapEnabled')"
                     dense
+                    hide-details
                   />
                 </v-card-subtitle>
-                <v-card-actions class="pt-0">
+                <v-card-actions class="d-flex flex-column pa-4 pt-2 mt-auto gap-2">
+                  <v-btn
+                    depressed
+                    block
+                    color="primary"
+                    class="neon-btn-small mb-2"
+                    @click="InsertMapInfo(newMap)"
+                  >
+                    {{ $t("User.MapSave") }}
+                  </v-btn>
                   <v-btn
                     text
-                    color="teal accent-4"
+                    block
+                    color="grey lighten-1"
                     @click="
                       newMap = {
                         map_display_name: '',
@@ -184,18 +218,10 @@
                   >
                     {{ $t("misc.Cancel") }}
                   </v-btn>
-                  <v-btn
-                    text
-                    color="teal accent-4"
-                    @click="InsertMapInfo(newMap)"
-                  >
-                    {{ $t("User.MapSave") }}
-                  </v-btn>
                 </v-card-actions>
               </v-card>
             </v-expand-transition>
-          </v-card>
-        </div>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

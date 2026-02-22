@@ -1,6 +1,16 @@
 <template>
-  <v-container class="home" fluid>
-    <PlayerLeaderboardTable :seasonId="parseInt(this.$route.params.seasonid)" />
+  <v-container class="leaderboard-dashboard pa-6" fluid>
+    <v-row justify="center">
+      <v-col cols="12" xl="10">
+        <v-card class="glass-card pa-4">
+          <div class="d-flex align-center mb-6 px-4">
+            <v-icon color="accent" class="mr-3" size="32">mdi-medal</v-icon>
+            <h2 class="font-orbitron white--text headline title-glow">{{ $t("Navbar.PlayerLeader") }}</h2>
+          </div>
+          <PlayerLeaderboardTable :seasonId="parseInt(this.$route.params.seasonid)" />
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

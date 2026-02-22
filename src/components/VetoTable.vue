@@ -1,17 +1,16 @@
 <template>
-  <v-container style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);" class="vetoInfo" fluid v-if="vetoInfo.length > 1">
-    <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);"
+  <v-container class="vetoInfo" fluid v-if="vetoInfo.length > 1">
+    <v-data-table
       :headers="headers"
       :items="vetoInfo"
-      class="elevation-1"
+      class="custom-table"
       :sort-by="['id']"
       hide-default-footer
       :no-data-text="$t('Veto.NoData')"
       :expanded.sync="expanded"
       show-expand
-      
     >
-      <template v-slot:item.map="{ item }" >
+      <template v-slot:item.map="{ item }">
         <b v-if="item.pick_or_veto === 'pick'">
           {{ item.map }}
         </b>
@@ -19,7 +18,7 @@
           {{ item.map }}
         </div>
       </template>
-      <template v-slot:item.pick_or_veto="{ item }" >
+      <template v-slot:item.pick_or_veto="{ item }">
         <b v-if="item.pick_or_veto === 'pick'">
           {{ $t("Veto.VetoPick") }}
         </b>
@@ -30,8 +29,11 @@
         >
           {{ $t("Veto.VetoBan") }}
         </div>
+        <div v-else>
+          {{ item.pick_or_veto }}
+        </div>
       </template>
-      <template v-slot:item.team_name="{ item }" >
+      <template v-slot:item.team_name="{ item }">
         <b v-if="item.pick_or_veto === 'pick'">
           <div v-if="item.team_name === 'Decider'">
             {{ $t("Veto.DeciderTeam") }}
@@ -59,11 +61,11 @@
         >
       </template>
 
-      <template v-slot:expanded-item="{ item, headers }" >
+      <template v-slot:expanded-item="{ item, headers }">
         <td :colspan="headers.length">
           <v-data-table
             item-key="id"
-            class="elevation-1"
+            class="custom-table"
             :headers="additionalHeaders"
             hide-default-footer
             dense
@@ -71,7 +73,6 @@
             :items="[item]"
             disable-sort
             :colspan="headers.length"
-            
           />
         </td>
       </template>
@@ -112,8 +113,12 @@ export default {
     async useStreamOrStaticData() {
       // Template will contain v-rows/etc like on main Team page.
       let matchData = await this.GetMatchData(this.match_id);
+      if (matchData.skip_veto === 1) {
+         this.getVetoInfo(matchData);
+         return;
+      }
       if (matchData.end_time == null) this.getStreamedVetoInfo();
-      else this.getVetoInfo();
+      else this.getVetoInfo(matchData);
     },
     async getStreamedVetoInfo() {
       try {
@@ -168,10 +173,64 @@ export default {
         });
       });
     },
-    async getVetoInfo() {
+    async getVetoInfo(matchDataObj) {
       try {
+        let matchData = matchDataObj || await this.GetMatchData(this.match_id);
         let vetoRes = await this.GetVetoesOfMatch(this.match_id);
-        if (typeof vetoRes != "string") this.vetoInfo = vetoRes;
+        if (typeof vetoRes != "string" && vetoRes.length > 0) {
+          this.vetoInfo = vetoRes;
+        } else {
+          // If no vetoes found, try to use mapstats or matchData.veto_mappool for preset matches
+          let presetMaps = [];
+          let mapStats = await this.GetMapStats(this.match_id);
+          
+          if (matchData.skip_veto === 1 && matchData.veto_mappool) {
+             let maps = matchData.veto_mappool.trim().split(" ");
+             let sides = matchData.map_sides ? matchData.map_sides.split(",") : [];
+             
+             maps.forEach((mapName, idx) => {
+                let stat = null;
+                if (typeof mapStats != "string" && mapStats.length > 0) {
+                   stat = mapStats.find(s => s.map_number === idx);
+                }
+                
+                let sideInfo = sides[idx] || "";
+                let tName = this.$t("Veto.DeciderTeam");
+                
+                if (sideInfo !== "knife") {
+                   let t1Name = matchData.team1?.name || matchData.team1_string || "Team 1";
+                   let t2Name = matchData.team2?.name || matchData.team2_string || "Team 2";
+                   tName = idx % 2 === 0 ? t1Name : t2Name;
+                }
+                
+                let pickStatus = "pick";
+                if (!stat && matchData.end_time != null) {
+                   pickStatus = "Not Played";
+                }
+
+                presetMaps.push({
+                   id: idx,
+                   match_id: matchData.id,
+                   team_name: tName,
+                   map: mapName,
+                   pick_or_veto: pickStatus
+                });
+             });
+             this.vetoInfo = presetMaps;
+          } else if (typeof mapStats != "string" && mapStats.length > 0) {
+             // Fallback for non-preset matches if no veto data exists
+             mapStats.forEach(stat => {
+                presetMaps.push({
+                   id: stat.map_number,
+                   match_id: stat.match_id,
+                   team_name: this.$t("Veto.DeciderTeam"),
+                   map: stat.map_name,
+                   pick_or_veto: "pick"
+                });
+             });
+             this.vetoInfo = presetMaps;
+          }
+        }
       } catch (error) {
         console.log(error);
       }
@@ -229,26 +288,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.container.vetoInfo.container--fluid {
-  padding: unset;
-}
-.v-data-table.elevation-1.v-data-table--dense.theme--dark {
-  background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);
-}
-tr:hover {
-  cursor:pointer;
-  color: #d4e157;
-}
-</style>
-<style lang="scss">
-tbody {
-  tr:hover {
-    background: #0a9489d6 !important;
-  }
-  td:first-child {
-    color: #d4e157;
-  }
-}
-</style>

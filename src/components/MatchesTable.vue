@@ -1,7 +1,7 @@
 <template>
-  <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);"
+  <v-data-table
     item-key="name"
-    class="elevation-1"
+    class="glass-table custom-table"
     :loading="isLoading"
     :loading-text="$t('misc.LoadText')"
     :headers="headers"
@@ -9,31 +9,80 @@
     :options.sync="options"
     :server-items-length="totalMatches"
     ref="MatchesTable"
-    @click:row="handleClick"
   >
-    <template v-slot:item.id="{ item }" style="font-weight:bold;">
-      {{item.id}}
-    </template>
-    <template v-slot:item.owner="{ item }">
-      {{item.owner}}
-    </template>
-    <template v-slot:item.team1_string="{ item }">
-      {{item.team1_string}}
-    </template>
-    <template v-slot:item.team2_string="{ item }">
-      {{item.team2_string}}
-    </template>
-    <template v-slot:top>
-      <div v-if="isMyMatches && isThereCancelledMatches">
-        <v-toolbar flat>
-          <v-toolbar-title>
-            <v-btn primary @click="deleteCancelled" :loading="deletePending">
-              {{ $t("Matches.DeleteButton") }}
-            </v-btn>
-          </v-toolbar-title>
-        </v-toolbar>
+    <template v-slot:item.id="{ item }">
+      <router-link
+        :to="{ path: '/match/' + item.id }"
+        v-if="item.match_status != 'Cancelled'"
+        class="primary--text font-weight-black"
+      >
+        #{{ item.id }}
+      </router-link>
+      <div v-else class="grey--text font-weight-bold">
+        #{{ item.id }}
       </div>
-      <div v-else />
+    </template>
+    
+    <template v-slot:item.team1_string="{ item }">
+      <router-link
+        :to="{ path: '/teams/' + item.team1_id }"
+        v-if="item.team1_id !== null"
+        class="white--text font-weight-bold"
+      >
+        {{ item.team1_string }}
+      </router-link>
+      <div v-else class="white--text opacity-70">
+        {{ item.team1_string }}
+      </div>
+    </template>
+
+    <template v-slot:item.team2_string="{ item }">
+      <router-link
+        :to="{ path: '/teams/' + item.team2_id }"
+        v-if="item.team2_id !== null"
+        class="white--text font-weight-bold"
+      >
+        {{ item.team2_string }}
+      </router-link>
+      <div v-else class="white--text opacity-70">
+        {{ item.team2_string }}
+      </div>
+    </template>
+
+    <template v-slot:item.match_status="{ item }">
+      <v-chip
+        small
+        label
+        :color="getStatusColor(item.match_status)"
+        class="font-weight-black text-uppercase rounded-lg px-3"
+        outlined
+      >
+        <v-icon left x-small v-if="item.match_status.includes('Live')">mdi-circle</v-icon>
+        {{ item.match_status }}
+      </v-chip>
+    </template>
+
+    <template v-slot:item.actions="{ item }">
+      <v-btn
+        depressed
+        color="primary"
+        class="black--text font-weight-black rounded-lg neon-btn-small"
+        :to="{ path: '/match/' + item.id }"
+        v-if="item.match_status != 'Cancelled'"
+        x-small
+      >
+        {{ $t("misc.View") }}
+      </v-btn>
+    </template>
+
+    <template v-slot:top>
+      <div class="d-flex align-center px-4 py-2 border-bottom" v-if="isMyMatches && isThereCancelledMatches">
+        <v-spacer />
+        <v-btn color="cyber-pink" depressed rounded small @click="deleteCancelled" :loading="deletePending" class="black--text font-weight-black">
+          <v-icon left size="16">mdi-delete-sweep</v-icon>
+          {{ $t("Matches.DeleteButton") }}
+        </v-btn>
+      </div>
     </template>
   </v-data-table>
 </template>
@@ -49,7 +98,9 @@ export default {
       isLoading: true,
       isThereCancelledMatches: false,
       totalMatches: -1,
-      options: {},
+      options: {
+        itemsPerPage: 10
+      },
       deletePending: false
     };
   },
@@ -78,6 +129,12 @@ export default {
         {
           text: this.$t("Matches.Owner"),
           value: "owner"
+        },
+        {
+          text: "",
+          value: "actions",
+          sortable: false,
+          align: "end"
         }
       ];
     },
@@ -94,9 +151,6 @@ export default {
     }
   },
   methods: {
-    handleClick(event, item) {
-      window.open("/match/" + item.item.id);
-    },
     async pushMatchData(resultArray) {
       this.isLoading = true;
       let matches = [];
@@ -176,25 +230,25 @@ export default {
       this.isLoading = true;
       this.isThereCancelledMatches = false;
       await this.pageUpdate();
+    },
+    getStatusColor(status) {
+      if (!status) return "grey";
+      if (status.includes("Won")) return "success";
+      if (status.includes("Lost")) return "error";
+      if (status.includes("Live")) return "primary";
+      if (status.includes("Cancelled")) return "grey darken-1";
+      return "secondary";
     }
   }
 };
 </script>
 
-<style>
-tr:hover {
-  cursor:pointer;
-  color: #d4e157;
+<style scoped>
+.border-bottom {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-</style>
-<style lang="scss">
-tbody {
-  tr:hover {
-    background: #0a9489d6 !important;
-  }
-  td:first-child {
-    color: #d4e157;
-  }
-}
-</style>
 
+.opacity-70 {
+  opacity: 0.7;
+}
+</style>

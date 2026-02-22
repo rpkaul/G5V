@@ -1,131 +1,92 @@
 <template>
-  <v-container class="mapstatsinfo" fluid>
-    <v-flex class="text-right" v-if="AdminToolsAvailable(matchInfo)">
-      <AdminButton
-        :matchInfo="matchInfo"
-        :user="user"
-        @force-the-reload="getMatchInfo()"
-      />
-    </v-flex>
-    <v-flex v-else />
-    <div class="text-h4 names" align="center" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-      <router-link
-        v-if="matchInfo.team1.id != 0"
-        :to="{ path: '/teams/' + matchInfo.team1_id }"
-      >
-        <div v-if="matchInfo.team1.logo != null">
-          <img
-            :src="apiUrl + '/static/img/logos/' + matchInfo.team1.logo + '.png'"
-            style="border-radius: 5px; width: 40px; height: 32px;"
-            @error="imgUrlAlt"
-          />
-          {{ matchInfo.team1_name }}
-        </div>
-        <div v-else-if="matchInfo.team1.flag != null">
-          <img
-            :src="get_flag_link(matchInfo.team1)"
-            style="border-radius: 5px;"
-          />
-          {{ matchInfo.team1_name }}
-        </div>
-        <div v-else>
-          {{ matchInfo.team1_name }}
-        </div>
-      </router-link>
-      <div v-else>
-        {{ matchInfo.team1_name }}
-      </div>
-      <div class="final-score text-h4" align="center" style="font-weight:bold;">
-         {{ matchInfo.team1_score }} {{ matchInfo.symbol }}
-        {{ matchInfo.team2_score }} 
-      </div>
-      <router-link
-        v-if="matchInfo.team2.id != 0"
-        :to="{ path: '/teams/' + matchInfo.team2_id }"
-      >
-        <div v-if="matchInfo.team2.logo != null">
-          <img
-            :src="apiUrl + '/static/img/logos/' + matchInfo.team2.logo + '.png'"
-            style="border-radius: 5px; width: 40px; height: 32px;"
-            @error="imgUrlAlt"
-          />
-          {{ matchInfo.team2_name }}
-        </div>
-        <div v-else-if="matchInfo.team2.flag != null">
-          <img
-            :src="get_flag_link(matchInfo.team2)"
-            style="border-radius: 5px;"
-          />
-          {{ matchInfo.team2_name }}
-        </div>
-        <div v-else>
-          {{ matchInfo.team2_name }}
-        </div>
-      </router-link>
-      <div v-else>
-        {{ matchInfo.team2_name }}
-      </div>
-    </div>
+  <v-container class="match-info-cockpit pa-6" fluid>
+    <v-row justify="center" align="center" class="mb-8">
+      <!-- Team 1 -->
+      <v-col cols="12" md="4" class="text-center">
+        <router-link :to="'/team/' + matchInfo.team1_id" class="text-decoration-none link-glow">
+          <v-avatar size="100" class="neon-halo mb-4">
+            <v-img 
+              :src="matchInfo.team1.logo ? apiUrl + '/static/img/logos/' + matchInfo.team1.logo + '.png' : get_flag_link(matchInfo.team1)" 
+              @error="imgUrlAlt"
+            />
+          </v-avatar>
+          <h3 class="team-name font-orbitron white--text">{{ matchInfo.team1_name }}</h3>
+        </router-link>
+      </v-col>
 
-    <div class="start-date text-subtitle-2" align="center">
-      {{ $t("Match.StartTime") }} {{ matchInfo.start_time }}
-    </div>
-    <div
-      class="end-date text-subtitle-2"
-      align="center"
-      v-if="matchInfo.end_time != null"
-    >
-      {{ $t("Match.EndTime") }} {{ matchInfo.end_time }}
-    </div>
-    <div v-if="matchInfo.forfeit == 1" align="center">
-      <strong>
-        {{ $t("Match.MatchForfeitedBy", { team: get_loser(matchInfo) }) }}
-      </strong>
-    </div>
-    <div v-else-if="matchInfo.cancelled == 1" align="center">
-      <strong>
-        {{ $t("Match.MatchHasBeenCancelled") }}
-      </strong>
-    </div>
-    <div
-      align="center"
-      v-if="
-        user.id != null &&
-          serverInfo.ip_string != '' &&
-          matchInfo.end_time == null
-      "
-    >
-      <v-btn
-        color="primary"
-        small
-        :href="
-          'steam://rungame/730/' +
-            user.steam_id +
-            '/+connect%20' +
-            serverInfo.ip_string +
-            ':' +
-            serverInfo.port
-        "
-      >
-        {{ $t("Match.Connect") }}
-      </v-btn>
-      <div v-if="serverInfo.gotv_port != null">
+      <!-- Score & Status -->
+      <v-col cols="12" md="4" class="text-center">
+        <div class="score-container mb-2">
+          <span class="score-value">{{ matchInfo.team1_score }}</span>
+          <span class="score-divider mx-4">:</span>
+          <span class="score-value">{{ matchInfo.team2_score }}</span>
+        </div>
+        <v-chip :color="getStatusColor" label outlined small class="status-chip mb-4">
+          {{ getStatusLabel }}
+        </v-chip>
+        <div class="match-meta grey--text text-caption font-weight-bold">
+          <div>{{ matchInfo.start_time }}</div>
+          <div v-if="matchInfo.match_title">{{ matchInfo.match_title }}</div>
+        </div>
+      </v-col>
+
+      <!-- Team 2 -->
+      <v-col cols="12" md="4" class="text-center">
+        <router-link :to="'/team/' + matchInfo.team2_id" class="text-decoration-none link-glow">
+          <v-avatar size="100" class="neon-halo mb-4">
+            <v-img 
+              :src="matchInfo.team2.logo ? apiUrl + '/static/img/logos/' + matchInfo.team2.logo + '.png' : get_flag_link(matchInfo.team2)" 
+              @error="imgUrlAlt"
+            />
+          </v-avatar>
+          <h3 class="team-name font-orbitron white--text">{{ matchInfo.team2_name }}</h3>
+        </router-link>
+      </v-col>
+    </v-row>
+
+    <!-- Connect Buttons -->
+    <v-row justify="center" v-if="user.id != null && user.id != -1 && serverInfo.ip_string != '' && matchInfo.end_time == null">
+      <v-col cols="12" class="text-center">
         <v-btn
-          color="secondary"
-          small
-          :href="
-            'steam://rungame/730/' +
-              user.steam_id +
-              '/+connect%20' +
-              serverInfo.ip_string +
-              ':' +
-              serverInfo.gotv_port
-          "
+          color="primary"
+          class="black--text font-weight-black mx-2 pulse-btn"
+          rounded
+          :href="'steam://rungame/730/' + user.steam_id + '/+connect%20' + serverInfo.ip_string + ':' + serverInfo.port"
         >
+          <v-icon left>mdi-play</v-icon>
+          {{ $t("Match.Connect") }}
+        </v-btn>
+        <v-btn
+          v-if="serverInfo.gotv_port"
+          color="secondary"
+          class="mx-2"
+          rounded
+          outlined
+          :href="'steam://rungame/730/' + user.steam_id + '/+connect%20' + serverInfo.ip_string + ':' + serverInfo.gotv_port"
+        >
+          <v-icon left>mdi-eye</v-icon>
           {{ $t("Match.GOTVConnect") }}
         </v-btn>
-      </div>
-    </div>
+      </v-col>
+    </v-row>
+
+    <v-divider class="my-8 opacity-10" />
+
+    <!-- Admin Controls Section -->
+    <v-row v-if="matchInfo.id !== -1 && AdminToolsAvailable(matchInfo) && !matchInfo.end_time && !matchInfo.cancelled">
+      <v-col cols="12">
+        <div class="d-flex align-center mb-6">
+          <v-icon color="primary" class="mr-2">mdi-cog</v-icon>
+          <span class="font-orbitron white--text subtitle-1">{{ $t("MatchAdmin.AdminTools") }}</span>
+        </div>
+        <AdminButton
+          :matchInfo="matchInfo"
+          :user="user"
+          layout="tiles"
+          @force-the-reload="getMatchInfo()"
+        />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -189,12 +150,21 @@ export default {
       imageLoaded: true
     };
   },
+  computed: {
+    getStatusLabel() {
+      if (this.matchInfo.cancelled) return this.$t("Matches.Cancelled");
+      if (this.matchInfo.forfeit) return this.$t("MatchAdmin.ForfeitMatch");
+      if (this.matchInfo.end_time) return this.$t("Matches.Finished");
+      return "LIVE";
+    },
+    getStatusColor() {
+      if (this.matchInfo.cancelled || this.matchInfo.forfeit) return "cyber-pink";
+      if (this.matchInfo.end_time) return "grey lighten-1";
+      return "primary";
+    }
+  },
   created() {
     this.checkIfMatchLive();
-
-    this.refreshInterval = setInterval(() => {
-      this.checkIfMatchLive();
-    }, 60000);
   },
   methods: {
     async checkIfMatchLive() {
@@ -236,8 +206,8 @@ export default {
         let serveRes = await this.GetServerData(serverResponse.server_id);
         this.matchInfo.team1_name = serverResponse.team1_string;
         this.matchInfo.team2_name = serverResponse.team2_string;
-        this.matchInfo.team1_id = serverResponse.team1_id;
-        this.matchInfo.team2_id = serverResponse.team2_id;
+        this.matchInfo.team1_id = team1Res && team1Res.id ? team1Res.id : serverResponse.team1_id;
+        this.matchInfo.team2_id = team2Res && team2Res.id ? team2Res.id : serverResponse.team2_id;
         this.matchInfo.start_time = new Date(
           serverResponse.start_time
         ).toLocaleString();
@@ -269,10 +239,63 @@ export default {
     imgUrlAlt(event) {
       if (event.target.src.includes("svg")) this.imageLoaded = false;
       else event.target.src = event.target.src.replace("png", "svg");
-    },
-    beforeDestroy() {
-      clearInterval(this.refreshInterval);
     }
   }
 };
 </script>
+
+<style scoped>
+.neon-halo {
+  border: 3px solid var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.team-name {
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  color: white;
+}
+
+.score-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 40px;
+  padding: 10px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.score-value {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: "Orbitron", sans-serif;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 15px rgba(0, 242, 255, 0.8);
+}
+
+.score-divider {
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.status-chip {
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.pulse-btn {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(0, 242, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
+}
+
+.opacity-10 {
+  opacity: 0.1;
+}
+</style>

@@ -1,80 +1,90 @@
 <template>
   <v-container style="padding: 0px">
-    <v-dialog shake v-model="show" max-width="800px">
-      <v-card color="lighten-4"> 
-        <v-card-title>
-          <span class="headline">
+    <v-dialog shake v-model="show" max-width="500px">
+      <v-card class="glass-card overflow-hidden">
+        <v-card-title class="pa-6">
+          <span class="font-orbitron primary--text headline">
             {{ title }}
           </span>
           <v-spacer></v-spacer>
-          <button type="button" class="close" @click="show = false">
-            X
-          </button>
+          <v-btn icon small @click="show = false" color="grey">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </v-card-title>
-        <v-card-text>
+        
+        <v-card-text class="pa-6 pt-0">
           <v-form ref="loginForm">
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-alert
-                      border="bottom"
-                      color="secondary lighten-1"
-                      dark
-                      icon="mdi-information-outline"
-                      v-html="$t('Login.Info')"
-                    >
-                    </v-alert>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="userInfo.steam_id"
-                      ref="SteamId"
-                      :label="$t('Login.SteamIdLabel')"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="12" md="12" lg="6">
-                    <v-text-field
-                      v-model="userInfo.username"
-                      :label="$t('Login.UsernameLabel')"
-                      ref="Username"
-                      required
-                      :rules="[
-                        () => !!userInfo.username || $t('misc.Required')
-                      ]"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="12" md="12" lg="6">
-                    <v-text-field
-                      v-model="userInfo.password"
-                      :label="$t('Login.PasswordLabel')"
-                      ref="Password"
-                      :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-                      :type="showPass ? 'text' : 'password'"
-                      :rules="[
-                        () => !!userInfo.password || $t('misc.Required')
-                      ]"
-                      @click:append="showPass = !showPass"
-                    />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+            <v-alert
+              type="info"
+              outlined
+              class="glass-card mb-6"
+              v-html="$t('Login.Info')"
+            >
+            </v-alert>
+
+            <v-text-field
+              v-model="userInfo.steam_id"
+              ref="SteamId"
+              :label="$t('Login.SteamIdLabel')"
+              filled
+              dense
+              class="mb-2"
+            />
+            
+            <v-text-field
+              v-model="userInfo.username"
+              :label="$t('Login.UsernameLabel')"
+              ref="Username"
+              required
+              filled
+              dense
+              class="mb-2"
+              :rules="[() => !!userInfo.username || $t('misc.Required')]"
+            />
+            
+            <v-text-field
+              v-model="userInfo.password"
+              :label="$t('Login.PasswordLabel')"
+              ref="Password"
+              :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass ? 'text' : 'password'"
+              filled
+              dense
+              :rules="[() => !!userInfo.password || $t('misc.Required')]"
+              @click:append="showPass = !showPass"
+              @keyup.enter="userLogin()"
+            />
           </v-form>
+
+          <v-divider class="my-6 opacity-20" />
+          
+          <div class="text-center">
+            <div class="grey--text text-uppercase caption font-weight-bold mb-4 letter-spacing-1">
+              OR SIGN IN WITH
+            </div>
+            <a :href="apiUrl + '/auth/steam'" class="steam-login-btn">
+              <img src="/img/login_noborder.png" alt="Sign in through Steam" />
+            </a>
+          </div>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
+
+        <v-divider class="mx-6 opacity-20" />
+
+        <v-card-actions class="pa-6">
           <v-btn
-            color="darken-1"
-            text
+            color="secondary"
+            outlined
             @click="userRegister"
             :disabled="userLoading"
+            class="px-6"
           >
             {{ $t("Login.Register") }}
           </v-btn>
+          <v-spacer />
           <v-btn
             color="primary"
-            text
+            depressed
+            class="black--text px-8"
             @click="userLogin()"
             :loading="userLoading"
             :disabled="userLoading"
@@ -133,7 +143,12 @@ export default {
       response: "",
       responseSheet: false,
       userLoading: false,
-      userInfo: Object
+      apiUrl: process.env?.VUE_APP_G5V_API_URL || "/api",
+      userInfo: {
+        username: "",
+        password: "",
+        steam_id: ""
+      }
     };
   },
   methods: {
@@ -187,3 +202,33 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.font-orbitron {
+  font-family: "Orbitron", sans-serif !important;
+  letter-spacing: 2px;
+}
+
+.opacity-20 {
+  opacity: 0.2;
+}
+
+.steam-login-btn {
+  display: inline-block;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: grayscale(0.2);
+}
+
+.steam-login-btn:hover {
+  transform: scale(1.05);
+  filter: grayscale(0) drop-shadow(0 0 10px rgba(0, 242, 255, 0.4));
+}
+
+.steam-login-btn img {
+  border-radius: 4px;
+}
+
+.letter-spacing-1 {
+  letter-spacing: 1px !important;
+}
+</style>

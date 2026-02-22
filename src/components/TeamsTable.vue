@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid>
-    <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);"
+  <v-container fluid class="pa-0">
+    <v-data-table
       item-key="id"
-      class="elevation-1"
+      class="glass-table custom-table"
       :loading="isLoading"
       :loading-text="$t('misc.LoadText')"
       :headers="headers"
@@ -10,77 +10,109 @@
       :options.sync="options"
       :server-items-length="totalTeams"
       ref="TeamsTable"
-      @click:row="handleClick"
     >
       <template v-slot:top>
-        <v-toolbar flat>
-          {{ $t("Teams.Title") }}
+        <div class="d-flex align-center px-4 py-2 border-bottom">
           <v-spacer />
           <v-btn
-            color="secondary"
-            @click="newImportDialog = true"
-            v-if="user.id != null"
+            depressed
+            color="primary"
+            class="black--text font-weight-black rounded-lg mr-2 neon-btn"
+            to="/teams/create"
+            v-if="user.id != null && user.id != -1"
+            small
           >
+            <v-icon left size="18">mdi-plus</v-icon>
+            {{ $t("Navbar.CreateTeam") }}
+          </v-btn>
+          <v-btn
+            depressed
+            color="secondary"
+            class="font-weight-black rounded-lg"
+            @click="newImportDialog = true"
+            v-if="user.id != null && user.id != -1"
+            small
+          >
+            <v-icon left size="18">mdi-cloud-import</v-icon>
             {{ $t("Seasons.ImportSeason") }}
           </v-btn>
-        </v-toolbar>
+        </div>
       </template>
       <template v-slot:item.id="{ item }">
-        {{ item.id }}
+        <router-link :to="{ path: '/teams/' + item.id }" class="primary--text font-weight-black">
+          #{{ item.id }}
+        </router-link>
+      </template>
+      <template v-slot:item.name="{ item }">
+        <router-link :to="{ path: '/teams/' + item.id }" class="white--text font-weight-bold hover-link">
+          {{ item.name }}
+        </router-link>
       </template>
       <template v-slot:item.owner="{ item }">
-        {{ item.owner }}
+        <router-link :to="{ path: '/user/' + item.user_id }" class="secondary--text font-weight-bold">
+          {{ item.owner }}
+        </router-link>
       </template>
       <template v-slot:item.flag="{ item }">
-        <img :src="get_flag_link(item)" style="border-radius: 5px;" />
+        <v-img :src="get_flag_link(item)" max-width="24" class="rounded-sm elevation-2" />
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-btn
+          depressed
+          color="primary"
+          class="black--text font-weight-black rounded-lg neon-btn-small"
+          :to="{ path: '/teams/' + item.id }"
+          x-small
+        >
+          {{ $t("misc.View") }}
+        </v-btn>
       </template>
     </v-data-table>
+    
+    <!-- Dialogs remain largely the same but could use some glass treatment if visible -->
     <v-dialog
       v-model="newImportDialog"
       transition="dialog-bottom-transition"
-      hide-overlay
       max-width="600px"
     >
-      <v-card>
-        <v-card-title>
-          <span class="headline">
-            {{ $t("Seasons.Import") }}
-          </span>
+      <v-card class="glass-card pa-4">
+        <v-card-title class="font-orbitron primary--text headline title-glow mb-4">
+          {{ $t("Seasons.Import") }}
         </v-card-title>
-        <v-card-text v-html="$t('Seasons.ImportExplanation')" />
+        <v-card-text v-html="$t('Seasons.ImportExplanation')" class="white--text opacity-80" />
         <v-card-text>
           <v-form ref="newImportForm">
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="challongeInfo.tournament_id"
-                    ref="ChallongeUrl"
-                    :label="$t('Seasons.ImportUrl')"
-                    required
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
+            <v-text-field
+              v-model="challongeInfo.tournament_id"
+              ref="ChallongeUrl"
+              :label="$t('Seasons.ImportUrl')"
+              filled
+              class="custom-field"
+              required
+            />
           </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" text @click="newImportDialog = false">
+          <v-btn color="grey lighten-1" text @click="newImportDialog = false" class="font-weight-bold">
             {{ $t("misc.Cancel") }}
           </v-btn>
-          <v-btn color="blue darken-1" text @click="importChallongeTeams()">
-            {{ $t("misc.Import") }}
+          <v-btn color="primary" depressed class="black--text font-weight-black px-6 rounded-lg" @click="importChallongeTeams()">
+             {{ $t("misc.Import") }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-bottom-sheet v-model="responseSheet" inset persistent>
-      <v-sheet class="text-center" height="200px">
+      <v-sheet class="text-center glass-card pa-8 border-top" height="200px">
+        <div class="white--text title mb-6">
+          {{ response }}
+        </div>
         <v-btn
-          class="mt-6"
-          text
-          color="success"
+          depressed
+          color="primary"
+          class="black--text font-weight-black px-8 rounded-lg"
           @click="
             responseSheet = !responseSheet;
             response = '';
@@ -88,9 +120,6 @@
         >
           {{ $t("misc.Close") }}
         </v-btn>
-        <div class="my-3">
-          {{ response }}
-        </div>
       </v-sheet>
     </v-bottom-sheet>
   </v-container>
@@ -111,7 +140,9 @@ export default {
       },
       responseSheet: false,
       response: "",
-      options: {},
+      options: {
+        itemsPerPage: 10
+      },
       totalTeams: -1
     };
   },
@@ -156,14 +187,17 @@ export default {
         {
           text: this.$t("Team.Owner"),
           value: "owner"
+        },
+        {
+          text: "",
+          value: "actions",
+          sortable: false,
+          align: "end"
         }
       ];
     }
   },
   methods: {
-    handleClick(event, item) {
-    window.open("/teams/" + item.item.id);
-    },
     async GetTeams() {
       this.isLoading = true;
       this.teams = [];
@@ -227,19 +261,24 @@ export default {
   }
 };
 </script>
-<style>
-tr:hover {
-  cursor:pointer;
-  color: #d4e157;
+
+<style scoped>
+.border-bottom {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-</style>
-<style lang="scss">
-tbody {
-  tr:hover {
-    background: #0a9489d6 !important;
-  }
-  td:first-child {
-    color: #d4e157;
-  }
+
+.custom-field ::v-deep .v-input__slot {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px !important;
+}
+
+.neon-btn {
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.neon-btn:hover {
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.5);
+  transform: translateY(-2px);
 }
 </style>

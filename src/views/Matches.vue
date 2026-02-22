@@ -1,6 +1,16 @@
 <template>
-  <v-container class="home" fluid>
-    <MatchesTable :user="user" />
+  <v-container class="matches-dashboard pa-6" fluid>
+    <v-row justify="center">
+      <v-col cols="12" xl="10">
+        <v-card class="glass-card pa-4">
+          <div class="d-flex align-center mb-6 px-4">
+            <v-icon color="primary" class="mr-3" size="32">mdi-sword-cross</v-icon>
+            <h2 class="font-orbitron white--text headline title-glow">{{ $t("Navbar.AllMatches") }}</h2>
+          </div>
+          <MatchesTable :user="user" />
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -8,7 +18,7 @@
 // @ is an alias to /src
 import MatchesTable from "@/components/MatchesTable";
 export default {
-  name: "Home",
+  name: "Matches",
   components: {
     MatchesTable
   },

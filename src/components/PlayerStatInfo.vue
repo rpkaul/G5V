@@ -1,82 +1,75 @@
 <template>
-  <v-row>
-    <v-col cols="12" sm="12" md="12" lg="2">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+  <div class="d-flex flex-wrap justify-space-between stat-container mx-n2">
+    <div class="pa-2 flex-grow-1" style="flex-basis: 140px; min-width: 140px;">
+      <v-card class="glass-card pa-2 d-flex flex-column h-100">
+        <v-card-title class="font-orbitron secondary--text subtitle-2 text-uppercase text-truncate px-2 pt-2 pb-0" style="letter-spacing: 1px;">
           {{ $t("PlayerStats.Kills") }}
         </v-card-title>
-        <v-skeleton-loader
-          class="mx-auto"
-          :loading="isKillsLoading"
-          type="text"
-        >
-          <v-card-text class="headline text--primary">
+        <v-spacer></v-spacer>
+        <v-skeleton-loader class="mx-auto" :loading="isKillsLoading" type="text">
+          <v-card-text class="headline white--text font-weight-bold text-center px-2 pb-2">
             {{ totalKills }}
           </v-card-text>
         </v-skeleton-loader>
       </v-card>
-    </v-col>
-    <v-col cols="12" sm="12" md="12" lg="2">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+    </div>
+
+    <div class="pa-2 flex-grow-1" style="flex-basis: 140px; min-width: 140px;">
+      <v-card class="glass-card pa-2 d-flex flex-column h-100">
+        <v-card-title class="font-orbitron secondary--text subtitle-2 text-uppercase text-truncate px-2 pt-2 pb-0" style="letter-spacing: 1px;">
           {{ $t("PlayerStats.Deaths") }}
         </v-card-title>
-        <v-skeleton-loader
-          class="mx-auto"
-          :loading="isDeathsLoading"
-          type="text"
-        >
-          <v-card-text class="headline text--primary">
+        <v-spacer></v-spacer>
+        <v-skeleton-loader class="mx-auto" :loading="isDeathsLoading" type="text">
+          <v-card-text class="headline white--text font-weight-bold text-center px-2 pb-2">
             {{ totalDeaths }}
           </v-card-text>
         </v-skeleton-loader>
       </v-card>
-    </v-col>
-    <v-col cols="12" sm="12" md="12" lg="2">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+    </div>
+
+    <div class="pa-2 flex-grow-1" style="flex-basis: 140px; min-width: 140px;">
+      <v-card class="glass-card pa-2 d-flex flex-column h-100">
+        <v-card-title class="font-orbitron secondary--text subtitle-2 text-uppercase text-truncate px-2 pt-2 pb-0" style="letter-spacing: 1px;">
           {{ $t("PlayerStats.Headshot") }}
         </v-card-title>
+        <v-spacer></v-spacer>
         <v-skeleton-loader class="mx-auto" :loading="isHSPLoading" type="text">
-          <v-card-text class="headline text--primary">
+          <v-card-text class="headline white--text font-weight-bold text-center px-2 pb-2">
             {{ headShotPercentage }}%
           </v-card-text>
         </v-skeleton-loader>
       </v-card>
-    </v-col>
-    <v-col cols="12" sm="12" md="12" lg="3">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+    </div>
+
+    <div class="pa-2 flex-grow-1" style="flex-basis: 140px; min-width: 140px;">
+      <v-card class="glass-card pa-2 d-flex flex-column h-100">
+        <v-card-title class="font-orbitron secondary--text subtitle-2 text-uppercase text-truncate px-2 pt-2 pb-0" style="letter-spacing: 1px;">
           {{ $t("PlayerStats.RoundsPlayed") }}
         </v-card-title>
-        <v-skeleton-loader
-          class="mx-auto"
-          :loading="isTotalRoundsLoading"
-          type="text"
-        >
-          <v-card-text class="headline text--primary">
+        <v-spacer></v-spacer>
+        <v-skeleton-loader class="mx-auto" :loading="isTotalRoundsLoading" type="text">
+          <v-card-text class="headline white--text font-weight-bold text-center px-2 pb-2">
             {{ totalRoundsPlayed }}
           </v-card-text>
         </v-skeleton-loader>
       </v-card>
-    </v-col>
-    <v-col cols="12" sm="12" md="12" lg="2">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+    </div>
+
+    <div class="pa-2 flex-grow-1" style="flex-basis: 140px; min-width: 140px;">
+      <v-card class="glass-card pa-2 d-flex flex-column h-100">
+        <v-card-title class="font-orbitron secondary--text subtitle-2 text-uppercase text-truncate px-2 pt-2 pb-0" style="letter-spacing: 1px;">
           {{ $t("PlayerStats.Rating") }}
         </v-card-title>
-        <v-skeleton-loader
-          class="mx-auto"
-          :loading="isRatingLoading"
-          type="text"
-        >
-          <v-card-text class="headline text--primary">
+        <v-spacer></v-spacer>
+        <v-skeleton-loader class="mx-auto" :loading="isRatingLoading" type="text">
+          <v-card-text class="headline white--text font-weight-bold text-center px-2 pb-2">
             {{ averageRating }}
           </v-card-text>
         </v-skeleton-loader>
       </v-card>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -164,13 +157,3 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-tbody {
-  tr:hover {
-    background: #0a9489d6 !important;
-  }
-  td:first-child {
-    color: #d4e157;
-  }
-}
-</style>

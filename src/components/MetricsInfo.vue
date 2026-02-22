@@ -1,126 +1,126 @@
 <template>
   <v-row>
     <v-col cols="12" sm="12" md="12" lg="3">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+      <v-card class="glass-card d-flex flex-column h-100 text-center py-2">
+        <v-card-subtitle class="font-orbitron font-weight-bold text-uppercase pb-0">
           {{ $t("Metrics.Users") }}
-        </v-card-title>
+        </v-card-subtitle>
         <v-skeleton-loader
-          class="mx-auto"
+          class="mx-auto flex-grow-1 d-flex align-center justify-center my-2"
           :loading="isUsersLoading"
           type="text"
         >
-          <v-card-text class="headline text--primary">
+          <div class="display-1 font-orbitron primary--text font-weight-bold">
             {{ userCount }}
-          </v-card-text>
+          </div>
         </v-skeleton-loader>
       </v-card>
     </v-col>
     <v-col cols="12" sm="12" md="12" lg="2">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+      <v-card class="glass-card d-flex flex-column h-100 text-center py-2">
+        <v-card-subtitle class="font-orbitron font-weight-bold text-uppercase pb-0">
           {{ $t("Metrics.Teams") }}
-        </v-card-title>
+        </v-card-subtitle>
         <v-skeleton-loader
-          class="mx-auto"
+          class="mx-auto flex-grow-1 d-flex align-center justify-center my-2"
           :loading="isTeamsLoading"
           type="text"
         >
-          <v-card-text class="headline text--primary">
+          <div class="display-1 font-orbitron primary--text font-weight-bold">
             {{ teamCount }}
-          </v-card-text>
+          </div>
         </v-skeleton-loader>
       </v-card>
     </v-col>
     <v-col cols="12" sm="12" md="12" lg="3">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+      <v-card class="glass-card d-flex flex-column h-100 text-center py-2">
+        <v-card-subtitle class="font-orbitron font-weight-bold text-uppercase pb-0">
           {{ $t("Metrics.Matches") }}
-        </v-card-title>
+        </v-card-subtitle>
         <v-skeleton-loader
-          class="mx-auto"
+          class="mx-auto flex-grow-1 d-flex align-center justify-center my-2"
           :loading="isMatchesLoading"
           type="text"
         >
-          <v-card-text class="headline text--primary">
+          <div class="display-1 font-orbitron primary--text font-weight-bold">
             {{ matchesCount }}
-          </v-card-text>
+          </div>
         </v-skeleton-loader>
       </v-card>
     </v-col>
     <v-col cols="12" sm="12" md="12" lg="3">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+      <v-card class="glass-card d-flex flex-column h-100 text-center py-2">
+        <v-card-subtitle class="font-orbitron font-weight-bold text-uppercase pb-0">
           {{ $t("Metrics.Complete") }}
-        </v-card-title>
+        </v-card-subtitle>
         <v-skeleton-loader
-          class="mx-auto"
+          class="mx-auto flex-grow-1 d-flex align-center justify-center my-2"
           :loading="isCompleteLoading"
           type="text"
         >
-          <v-card-text class="headline text--primary">
+          <div class="display-1 font-orbitron primary--text font-weight-bold">
             {{ matchesComplete }}
-          </v-card-text>
+          </div>
         </v-skeleton-loader>
       </v-card>
     </v-col>
     <v-col cols="12" sm="12" md="12" lg="3">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+      <v-card class="glass-card d-flex flex-column h-100 text-center py-2">
+        <v-card-subtitle class="font-orbitron font-weight-bold text-uppercase pb-0">
           {{ $t("Metrics.Servers") }}
-        </v-card-title>
+        </v-card-subtitle>
         <v-skeleton-loader
-          class="mx-auto"
+          class="mx-auto flex-grow-1 d-flex align-center justify-center my-2"
           :loading="isServersLoading"
           type="text"
         >
-          <v-card-text class="headline text--primary">
+          <div class="display-1 font-orbitron primary--text font-weight-bold">
             {{ serverCount }}
-          </v-card-text>
+          </div>
         </v-skeleton-loader>
       </v-card>
     </v-col>
     <v-col cols="12" sm="12" md="12" lg="3">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+      <v-card class="glass-card d-flex flex-column h-100 text-center py-2">
+        <v-card-subtitle class="font-orbitron font-weight-bold text-uppercase pb-0">
           {{ $t("Metrics.Maps") }}
-        </v-card-title>
-        <v-skeleton-loader class="mx-auto" :loading="isMapsLoading" type="text">
-          <v-card-text class="headline text--primary">
+        </v-card-subtitle>
+        <v-skeleton-loader class="mx-auto flex-grow-1 d-flex align-center justify-center my-2" :loading="isMapsLoading" type="text">
+          <div class="display-1 font-orbitron primary--text font-weight-bold">
             {{ mapCount }}
-          </v-card-text>
+          </div>
         </v-skeleton-loader>
       </v-card>
     </v-col>
     <v-col cols="12" sm="12" md="12" lg="2">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+      <v-card class="glass-card d-flex flex-column h-100 text-center py-2">
+        <v-card-subtitle class="font-orbitron font-weight-bold text-uppercase pb-0">
           {{ $t("Metrics.Players") }}
-        </v-card-title>
+        </v-card-subtitle>
         <v-skeleton-loader
-          class="mx-auto"
+          class="mx-auto flex-grow-1 d-flex align-center justify-center my-2"
           :loading="isPlayersLoading"
           type="text"
         >
-          <v-card-text class="headline text--primary">
+          <div class="display-1 font-orbitron primary--text font-weight-bold">
             {{ playerCount }}
-          </v-card-text>
+          </div>
         </v-skeleton-loader>
       </v-card>
     </v-col>
     <v-col cols="12" sm="12" md="12" lg="2">
-      <v-card elevation="3">
-        <v-card-title class="headline text--secondary">
+      <v-card class="glass-card d-flex flex-column h-100 text-center py-2">
+        <v-card-subtitle class="font-orbitron font-weight-bold text-uppercase pb-0">
           {{ $t("Metrics.Seasons") }}
-        </v-card-title>
+        </v-card-subtitle>
         <v-skeleton-loader
-          class="mx-auto"
+          class="mx-auto flex-grow-1 d-flex align-center justify-center my-2"
           :loading="isSeasonsLoading"
           type="text"
         >
-          <v-card-text class="headline text--primary">
+          <div class="display-1 font-orbitron primary--text font-weight-bold">
             {{ seasonCount }}
-          </v-card-text>
+          </div>
         </v-skeleton-loader>
       </v-card>
     </v-col>

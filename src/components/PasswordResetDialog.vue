@@ -1,15 +1,15 @@
 <template>
   <v-container style="padding: 0px">
     <v-dialog shake v-model="show" max-width="800px">
-      <v-card color="lighten-4">
+      <v-card class="glass-card">
         <v-card-title>
-          <span class="headline">
+          <span class="headline font-orbitron primary--text">
             {{ title }}
           </span>
           <v-spacer></v-spacer>
-          <button type="button" class="close" @click="show = false">
-            X
-          </button>
+          <v-btn icon color="grey lighten-1" @click="show = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </v-card-title>
         <v-card-text>
           <v-form ref="loginForm">
@@ -22,6 +22,8 @@
                       :label="$t('Login.OldPasswordLabel')"
                       ref="Username"
                       required
+                      filled
+                      class="custom-field"
                       :rules="[
                         () => !!userInfo.old_password || $t('misc.Required')
                       ]"
@@ -34,6 +36,8 @@
                       ref="Password"
                       :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
                       :type="showPass ? 'text' : 'password'"
+                      filled
+                      class="custom-field"
                       :rules="[
                         () => !!userInfo.password || $t('misc.Required')
                       ]"
@@ -45,11 +49,12 @@
             </v-card-text>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
           <v-btn
             color="primary"
-            text
+            depressed
+            class="neon-btn-small"
             @click="userResetPass()"
             :loading="userLoading"
             :disabled="userLoading"

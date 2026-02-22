@@ -1,26 +1,27 @@
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
-import { colors } from "vuetify/lib";
 
 Vue.use(Vuetify);
 
 export default new Vuetify({
   theme: {
-    dark: true,
+    dark: true, // Default to dark mode for the gaming feel
     themes: {
       light: {
-        primary: colors.blue,
-        secondary: colors.blueGrey.darken1,
-        accent: colors.shades.black,
-        error: colors.red.accent3,
-        background: colors.lightBlue.lighten4,
-        footer: colors.lightBlue
+        primary: "#00f2ff",
+        secondary: "#7000ff",
+        accent: "#ff0055",
+        error: "#ff4444",
+        background: "#f0f2f5",
+        surface: "#ffffff"
       },
       dark: {
-        primary: colors.lime.lighten1,
-        background: colors.lime.darken4,
-        footer: colors.green.darken1,
-        table: colors.green.darken1
+        primary: "#00f2ff",     // Electric Cyan
+        secondary: "#7000ff",   // Neon Purple
+        accent: "#ff0055",      // Cyber Pink
+        background: "#0a0a0c",  // Deep Space Black
+        surface: "#16161a",     // Card Grey
+        error: "#ff4444"
       }
     }
   }

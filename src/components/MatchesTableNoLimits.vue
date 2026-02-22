@@ -1,7 +1,7 @@
 <template>
-  <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);"
+  <v-data-table
     item-key="name"
-    class="elevation-1"
+    class="glass-table custom-table"
     :loading="isLoading"
     :loading-text="$t('misc.LoadText')"
     :headers="headers"
@@ -14,15 +14,16 @@
       <router-link
         :to="{ path: '/match/' + item.id }"
         v-if="item.match_status != 'Cancelled'"
+        class="primary--text font-weight-black hover-link"
       >
-        {{ item.id }}
+        #{{ item.id }}
       </router-link>
-      <div v-else>
-        {{ item.id }}
+      <div v-else class="grey--text font-weight-bold">
+        #{{ item.id }}
       </div>
     </template>
     <template v-slot:item.owner="{ item }">
-      <router-link :to="{ path: '/user/' + item.user_id }">
+      <router-link :to="{ path: '/user/' + item.user_id }" class="secondary--text font-weight-bold hover-link">
         {{ item.owner }}
       </router-link>
     </template>
@@ -30,10 +31,11 @@
       <router-link
         :to="{ path: '/teams/' + item.team1_id }"
         v-if="item.team1_id !== null"
+        class="white--text font-weight-bold hover-link"
       >
         {{ item.team1_string }}
       </router-link>
-      <div v-else>
+      <div v-else class="white--text font-weight-bold">
         {{ item.team1_string }}
       </div>
     </template>
@@ -41,12 +43,25 @@
       <router-link
         :to="{ path: '/teams/' + item.team2_id }"
         v-if="item.team2_id !== null"
+        class="white--text font-weight-bold hover-link"
       >
         {{ item.team2_string }}
       </router-link>
-      <div v-else>
+      <div v-else class="white--text font-weight-bold">
         {{ item.team2_string }}
       </div>
+    </template>
+    <template v-slot:item.actions="{ item }">
+      <v-btn
+        depressed
+        color="primary"
+        class="black--text font-weight-black rounded-lg neon-btn-small"
+        :to="{ path: '/match/' + item.id }"
+        v-if="item.match_status != 'Cancelled'"
+        x-small
+      >
+        {{ $t("misc.View") }}
+      </v-btn>
     </template>
     <template v-slot:top>
       <div v-if="isMyMatches && isThereCancelledMatches">
@@ -113,6 +128,12 @@ export default {
         {
           text: this.$t("Matches.Owner"),
           value: "owner"
+        },
+        {
+          text: "",
+          value: "actions",
+          sortable: false,
+          align: "end"
         }
       ];
     }
@@ -165,3 +186,7 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+/* Redundant table styles removed in favor of global App.vue styles */
+</style>

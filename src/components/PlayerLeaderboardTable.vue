@@ -1,8 +1,8 @@
 <template>
-  <v-container class="PlayerLeaderboard" fluid>
-    <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);border-radius:20px;"
+  <v-container class="PlayerLeaderboard px-0" fluid>
+    <v-data-table
       item-key="steamId"
-      class="elevation-1"
+      class="glass-table custom-table"
       :loading="isLoading"
       :loading-text="$t('misc.LoadText')"
       :headers="headers"
@@ -13,29 +13,43 @@
       ref="PlayerLeaderboardTable"
       :expanded="[]"
       show-expand
-      @click:row="handleClick"
+      :items-per-page="10"
     >
-      <template v-slot:top >
-        <v-toolbar flat style="border-top-left-radius:20px;border-top-right-radius: 20px;">
-          {{ $t("misc.PLeader") }}
-        </v-toolbar>
-      </template>
       <template v-slot:item.name="{ item }">
+        <router-link :to="{ path: '/user/' + item.steamId }" class="primary--text font-weight-black hover-link">
           {{ item.name }}
+        </router-link>
       </template>
-      <template v-slot:expanded-item="{ item }" class="text-center" >
-        <td :colspan="headers.length">
+
+      <template v-slot:item.average_rating="{ item }">
+        <v-chip small label color="secondary" outlined class="font-weight-black rounded-lg">
+          {{ item.average_rating }}
+        </v-chip>
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-btn
+          depressed
+          color="primary"
+          class="black--text font-weight-black rounded-lg neon-btn-small"
+          :to="{ path: '/user/' + item.steamId }"
+          x-small
+        >
+          {{ $t("misc.View") }}
+        </v-btn>
+      </template>
+
+      <template v-slot:expanded-item="{ item }">
+        <td :colspan="headers.length" class="pa-0 expanded-zone border-bottom">
           <v-data-table
             item-key="steamId"
-            class="elevation-1"
+            class="transparent dense-table"
             :headers="additionalHeaders"
             hide-default-footer
             dense
             :key="item.steamId"
             :items="[item]"
             disable-sort
-            :colspan="headers.length"
-            style="background: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);"
           />
         </td>
       </template>
@@ -89,9 +103,9 @@ export default {
           value: "assists",
           groupable: false
         },
-         {
-          text: this.$t("PlayerStats.ADR"),
-          value: "adr",
+        {
+          text: this.$t("PlayerStats.FlashbangAssists"),
+          value: "fba",
           groupable: false
         },
         {
@@ -105,6 +119,12 @@ export default {
         },
         {
           text: "",
+          value: "actions",
+          groupable: false,
+          align: "end"
+        },
+        {
+          text: "",
           value: "data-table-expand",
           groupable: false,
           align: "end"
@@ -114,8 +134,8 @@ export default {
     additionalHeaders() {
       return [
         {
-          text: this.$t("PlayerStats.FlashbangAssists"),
-          value: "fba"
+          text: this.$t("PlayerStats.ADR"),
+          value: "adr"
         },
         {
           text: this.$t("PlayerStats.Headshot") + "%",
@@ -153,9 +173,6 @@ export default {
     }
   },
   methods: {
-    handleClick(event, item) {
-      window.open("/user/" + item.item.steamId);
-    },
     async GetLeaderboard() {
       try {
         let res;
@@ -180,26 +197,18 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-tbody {
-  tr:hover {
-    background: #0a9489d6 !important;
-  }
-  td:first-child {
-    color: #d4e157;
-  }
+
+<style scoped>
+.border-bottom {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-</style>
-<style>
-tr:hover {
-  cursor:pointer;
-  color: #d4e157;
+
+.expanded-zone {
+  background: rgba(0, 0, 0, 0.2) !important;
 }
-.v-sheet.v-toolbar.v-toolbar--flat {
-  background: unset;
-  background-image: linear-gradient(to right, #035c5e, #0d675e, #23715b, #3a7a55, #53834d);
-  display: flex;
-  justify-content: center;
-  font-weight: bold;
+
+.dense-table ::v-deep th {
+  font-size: 0.75rem !important;
+  color: var(--neon-purple) !important;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid>
-    <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);"
+  <v-container fluid class="pa-0">
+    <v-data-table
       item-key="id"
-      class="elevation-1"
+      class="glass-table custom-table rounded-lg"
       :loading="isLoading"
       :loading-text="$t('misc.LoadText')"
       :headers="headers"
@@ -10,65 +10,95 @@
       :sort-by="['id']"
       sort-desc
       ref="SeasonsTable"
-      @click:row="handleClick"
     >
       <template v-slot:top>
-        <v-toolbar flat>
-          {{ $t("Seasons.Title") }}
+        <div class="d-flex align-center px-4 py-2 border-bottom">
           <v-spacer />
           <v-btn
+            depressed
             color="primary"
+            class="black--text font-weight-black neon-btn mr-2"
+            rounded
+            small
             @click="newDialog = true"
-            v-if="user.id != null"
+            v-if="user.id != null && user.id != -1"
           >
+            <v-icon left size="18">mdi-plus</v-icon>
             {{ $t("Seasons.New") }}
           </v-btn>
           <v-btn
+            depressed
             color="secondary"
+            class="white--text font-weight-black rounded-lg neon-btn"
+            rounded
+            small
             @click="newImportDialog = true"
-            v-if="user.id != null"
+            v-if="user.id != null && user.id != -1"
           >
+            <v-icon left size="18">mdi-cloud-import</v-icon>
             {{ $t("Seasons.ImportSeason") }}
           </v-btn>
-        </v-toolbar>
+        </div>
       </template>
       <template v-slot:item.id="{ item }">
-          {{ item.id }}
+        <router-link :to="{ path: '/season/' + item.id }" class="primary--text font-weight-black">
+          #{{ item.id }}
+        </router-link>
+      </template>
+      <template v-slot:item.name="{ item }">
+        <router-link :to="{ path: '/season/' + item.id }" class="white--text font-weight-bold hover-link">
+          {{ item.name }}
+        </router-link>
       </template>
       <template v-slot:item.owner="{ item }">
-        <router-link :to="{ path: '/user/' + item.user_id }">
+        <router-link :to="{ path: '/user/' + item.user_id }" class="secondary--text font-weight-bold">
           {{ item.owner }}
         </router-link>
       </template>
       <template v-slot:item.end_date="{ item }">
-        <div v-if="item.end_date == null">
+        <div v-if="item.end_date == null" class="grey--text lighten-1">
           {{ $t("Seasons.NotFinished") }}
         </div>
-        <div v-else>
+        <div v-else class="white--text">
           {{ item.end_date }}
         </div>
       </template>
       <template v-slot:item.actions="{ item }">
-        <div
-          v-if="
-            user.super_admin == 1 || user.admin == 1 || item.user_id == user.id
-          "
-        >
-          <v-icon @click="deleteSelectedSeason(item)">
-            mdi-delete
-          </v-icon>
-          <v-icon @click="editSelectedSeason(item)">
-            mdi-pencil
-          </v-icon>
+        <div class="d-flex align-center">
+          <v-btn
+            depressed
+            color="primary"
+            class="black--text font-weight-black rounded-lg neon-btn-small mr-2"
+            :to="{ path: '/season/' + item.id }"
+            x-small
+          >
+            {{ $t("misc.View") }}
+          </v-btn>
+          <div
+            v-if="
+              user.super_admin == 1 || user.admin == 1 || item.user_id == user.id
+            "
+            class="d-flex"
+          >
+            <v-btn icon small @click="editSelectedSeason(item)" class="mr-1">
+              <v-icon color="primary" small>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn icon small @click="deleteSelectedSeason(item)">
+              <v-icon color="cyber-pink" small>mdi-delete</v-icon>
+            </v-btn>
+          </div>
         </div>
       </template>
     </v-data-table>
     <v-bottom-sheet v-model="responseSheet" inset persistent>
-      <v-sheet class="text-center" height="200px">
+      <v-sheet class="text-center glass-card pa-8 border-top" height="200px">
+        <div class="white--text title mb-6">
+          {{ response }}
+        </div>
         <v-btn
-          class="mt-6"
-          text
-          color="success"
+          depressed
+          color="primary"
+          class="black--text font-weight-black px-8 rounded-lg"
           @click="
             responseSheet = !responseSheet;
             response = '';
@@ -76,27 +106,24 @@
         >
           {{ $t("misc.Close") }}
         </v-btn>
-        <div class="my-3">
-          {{ response }}
-        </div>
       </v-sheet>
     </v-bottom-sheet>
     <v-dialog v-model="deleteDialog" persistent max-width="600px">
-      <v-card>
+      <v-card class="glass-card pa-4">
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron cyber-pink--text headline title-glow">
             {{ $t("Seasons.DeleteConfirmation") }}
           </span>
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="white--text opacity-80 mt-2">
           {{ $t("Seasons.DeleteExplain") }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="deleteDialog = false">
+          <v-btn color="grey lighten-1" text @click="deleteDialog = false" class="font-weight-black">
             {{ $t("misc.No") }}
           </v-btn>
-          <v-btn color="red darken-1" text @click="deleteSeasonConfirm()">
+          <v-btn color="cyber-pink" depressed class="black--text font-weight-black px-6 rounded-lg" @click="deleteSeasonConfirm()">
             {{ $t("misc.Yes") }}
           </v-btn>
         </v-card-actions>
@@ -105,32 +132,35 @@
     <v-dialog
       v-model="newImportDialog"
       transition="dialog-bottom-transition"
-      hide-overlay
       max-width="600px"
     >
-      <v-card>
+      <v-card class="glass-card pa-4">
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron primary--text headline title-glow">
             {{ $t("Seasons.Import") }}
           </span>
         </v-card-title>
-        <v-card-text v-html="$t('Seasons.ImportExplanation')" />
+        <v-card-text v-html="$t('Seasons.ImportExplanation')" class="white--text opacity-80 mt-2" />
         <v-card-text>
           <v-form ref="newImportForm">
             <v-container>
               <v-row>
-                <v-col cols="10">
+                <v-col cols="12" md="10">
                   <v-text-field
                     v-model="challongeInfo.tournament_id"
                     ref="ChallongeUrl"
                     :label="$t('Seasons.ImportUrl')"
+                    filled
+                    class="custom-field"
                     required
                   />
                 </v-col>
-                <v-col cols="2">
+                <v-col cols="12" md="2" class="d-flex align-center">
                   <v-switch
                     v-model="challongeInfo.import_teams"
                     :label="$t('Seasons.ImportTeams')"
+                    color="primary"
+                    inset
                     ref="skipveto"
                   />
                 </v-col>
@@ -140,10 +170,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" text @click="newImportDialog = false">
+          <v-btn color="grey lighten-1" text @click="newImportDialog = false" class="font-weight-bold">
             {{ $t("misc.Cancel") }}
           </v-btn>
-          <v-btn color="blue darken-1" text @click="importChallongeSeason()">
+          <v-btn color="primary" depressed class="black--text font-weight-black px-6 rounded-lg" @click="importChallongeSeason()">
             {{ $t("misc.Import") }}
           </v-btn>
         </v-card-actions>
@@ -156,29 +186,45 @@
       hide-overlay
       transition="dialog-bottom-transition"
     >
-      <v-card color="lighten-4">
-        <v-card-title>
-          <span class="headline">
+      <v-card class="glass-card pa-0 overflow-hidden" style="border-radius: 0 !important;">
+        <v-toolbar flat color="transparent" class="border-bottom">
+          <v-btn icon @click="newDialog = false">
+            <v-icon color="grey lighten-1">mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title class="font-orbitron primary--text headline title-glow">
             {{ formTitle }}
-          </span>
-        </v-card-title>
-        <v-card-text>
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" depressed class="black--text font-weight-black px-10 rounded-lg elevation-4 neon-btn" @click="saveNewSeason()">
+            <v-icon left>mdi-content-save</v-icon>
+            {{ $t("misc.Save") }}
+          </v-btn>
+        </v-toolbar>
+
+        <v-card-text class="pa-10">
           <v-form ref="newSeasonForm">
-            <v-card-text>
-              <v-container>
+            <v-container>
+              <!-- Info Section -->
+              <div class="glass-panel pa-6 rounded-lg mb-8">
+                <h3 class="font-orbitron secondary--text subtitle-1 mb-6 d-flex align-center">
+                  <v-icon color="secondary" class="mr-3">mdi-information</v-icon>
+                  General Information
+                </h3>
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="12" md="8">
                     <v-text-field
                       v-model="newSeason.name"
                       ref="SeasonName"
                       :label="$t('Seasons.Name')"
+                      filled
+                      class="custom-field"
                       required
                       :rules="[
                         () => !!newSeason.name || 'This field is required'
                       ]"
                     />
                   </v-col>
-                  <v-col cols="12">
+                  <v-col cols="12" md="4">
                     <v-menu
                       v-model="datemenu"
                       :close-on-content-click="false"
@@ -189,6 +235,9 @@
                           v-model="dateRangeText"
                           v-on="on"
                           readonly
+                          filled
+                          class="custom-field"
+                          prepend-inner-icon="mdi-calendar"
                           :label="$t('Seasons.DateTitle')"
                           :rules="[
                             v => !!v || $t('misc.Required'),
@@ -201,257 +250,195 @@
                         :label="$t('Seasons.DateTitle')"
                         ref="DateRange"
                         range
+                        color="primary"
+                        header-color="primary"
+                        dark
                       />
                     </v-menu>
                   </v-col>
                 </v-row>
-                <v-row class="justify-center">
-                  <v-col cols="2">
+              </div>
+
+              <!-- Logic Section -->
+              <div class="glass-panel pa-6 rounded-lg mb-8">
+                <h3 class="font-orbitron secondary--text subtitle-1 mb-6 d-flex align-center">
+                  <v-icon color="secondary" class="mr-3">mdi-cog</v-icon>
+                  Match Configuration
+                </h3>
+                
+                <v-row class="justify-center mb-6">
+                  <v-col cols="12" md="2" class="d-flex justify-center">
                     <v-switch
                       v-model="seasonDefaults.wingman"
                       :label="$t('CreateMatch.Wingman')"
+                      color="primary"
+                      inset
                       ref="wingman"
                     />
                   </v-col>
                 </v-row>
-                <v-row class="justify-center">
-                  <v-col cols="12" class="text-center text-h6">
+
+                <div class="text-center mb-10">
+                  <p class="white--text font-weight-black text-uppercase letter-spacing-1 mb-4">
                     {{ $t("CreateMatch.FormSeriesType") }}
-                  </v-col>
+                  </p>
                   <v-radio-group
                     v-model="seasonDefaults.maps_to_win"
                     row
-                    class="justify-center"
+                    class="justify-center mt-0"
                   >
-                    <v-col lg="3" sm="12" align-self="center">
-                      <v-radio
-                        :label="$t('CreateMatch.BestOf') + 1"
-                        :value="1"
-                      />
-                    </v-col>
-                    <v-col lg="3" sm="12">
-                      <v-radio
-                        :label="$t('CreateMatch.BestOf') + 2"
-                        :value="2"
-                      />
-                    </v-col>
-                    <v-col lg="3" sm="12" align-self="center">
-                      <v-radio
-                        :label="$t('CreateMatch.BestOf') + 3"
-                        :value="3"
-                      />
-                    </v-col>
-                    <v-col lg="3" sm="12" align-self="center">
-                      <v-radio
-                        :label="$t('CreateMatch.BestOf') + 5"
-                        :value="5"
-                      />
-                    </v-col>
-                    <v-col lg="3" sm="12" align-self="center" offset-lg="5">
-                      <v-radio
-                        :label="$t('CreateMatch.BestOf') + 7"
-                        :value="7"
-                      />
-                    </v-col>
+                    <v-radio :label="$t('CreateMatch.BestOf') + 1" :value="1" color="primary" class="mx-4" />
+                    <v-radio :label="$t('CreateMatch.BestOf') + 2" :value="2" color="primary" class="mx-4" />
+                    <v-radio :label="$t('CreateMatch.BestOf') + 3" :value="3" color="primary" class="mx-4" />
+                    <v-radio :label="$t('CreateMatch.BestOf') + 5" :value="5" color="primary" class="mx-4" />
+                    <v-radio :label="$t('CreateMatch.BestOf') + 7" :value="7" color="primary" class="mx-4" />
                   </v-radio-group>
-                </v-row>
-                <v-col cols="12" class="text-center text-h6">
-                  {{ $t("CreateMatch.ReadyOptions") }}
-                </v-col>
-                <v-row class="justify-center">
-                  <v-col lg="3" md="12" sm="12">
-                    {{ $t("CreateMatch.PlayersPerTeam") }}
-                    <v-slider
-                      v-model="seasonDefaults.players_per_team"
-                      single-line
-                      :min="1"
-                      :max="5"
-                      :thumb-size="24"
-                      thumb-label
-                      ticks="always"
-                      tick-size="4"
-                      step="1"
-                    />
-                  </v-col>
-                  <v-col lg="3" md="12" sm="12">
-                    {{ $t("CreateMatch.MinPlayersReady") }}
-                    <v-slider
-                      v-model="seasonDefaults.min_players_to_ready"
-                      single-line
-                      :min="1"
-                      :max="5"
-                      :thumb-size="24"
-                      thumb-label
-                      ticks="always"
-                      tick-size="4"
-                      step="1"
-                    />
-                  </v-col>
-                  <v-col lg="3" md="12" sm="12">
-                    {{ $t("CreateMatch.SpectatorsToReady") }}
-                    <v-slider
-                      v-model="seasonDefaults.min_spectators_to_ready"
-                      single-line
-                      :min="0"
-                      :thumb-size="24"
-                      thumb-label
-                      ticks="always"
-                      tick-size="4"
-                      step="1"
-                    />
-                  </v-col>
-                </v-row>
-                <v-col cols="12" class="text-center text-h6">
-                  <strong>
+                </div>
+
+                <div class="glass-info pa-6 rounded-lg mb-8">
+                  <v-row>
+                    <v-col cols="12" md="4">
+                      <span class="caption secondary--text text-uppercase font-weight-black mb-2 d-block">{{ $t("CreateMatch.PlayersPerTeam") }}</span>
+                      <v-slider
+                        v-model="seasonDefaults.players_per_team"
+                        :min="1" :max="5"
+                        thumb-label
+                        ticks="always"
+                        color="secondary"
+                      />
+                    </v-col>
+                    <v-col cols="12" md="4">
+                      <span class="caption secondary--text text-uppercase font-weight-black mb-2 d-block">{{ $t("CreateMatch.MinPlayersReady") }}</span>
+                      <v-slider
+                        v-model="seasonDefaults.min_players_to_ready"
+                        :min="1" :max="5"
+                        thumb-label
+                        ticks="always"
+                      />
+                    </v-col>
+                    <v-col cols="12" md="4">
+                      <span class="caption secondary--text text-uppercase font-weight-black mb-2 d-block">{{ $t("CreateMatch.SpectatorsToReady") }}</span>
+                      <v-slider
+                        v-model="seasonDefaults.min_spectators_to_ready"
+                        :min="0" :max="5"
+                        thumb-label
+                        ticks="always"
+                      />
+                    </v-col>
+                  </v-row>
+                </div>
+
+                <div class="text-center mb-8">
+                  <h3 class="font-orbitron primary--text subtitle-1 mb-4">
                     {{ $t("CreateMatch.FormMapPool") }}
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
-                        <v-btn v-bind="attrs" v-on="on" x-small fab icon>
-                          <v-icon>mdi-information</v-icon>
+                        <v-btn v-bind="attrs" v-on="on" x-small fab icon class="ml-2">
+                          <v-icon size="18">mdi-information</v-icon>
                         </v-btn>
                       </template>
                       <span>{{ $t("CreateMatch.FormMapExplanation") }}</span>
                     </v-tooltip>
-                  </strong>
-                </v-col>
-                <v-row no-gutters class="justify-center">
-                  <v-col lg="1" sm="12" v-for="maps in MapList" :key="maps.id">
-                    <v-checkbox
-                      v-model="seasonDefaults.map_pool"
-                      :value="maps.map_name"
-                      :label="maps.map_display_name"
-                      :rules="[
-                        () =>
-                          seasonDefaults.map_pool.length > 0 ||
-                          $t('CreateMatch.MapChoiceError'),
-                        () =>
-                          seasonDefaults.map_pool.length >
-                            seasonDefaults.maps_to_win - 1 ||
-                          $t('CreateMatch.MapNotEnough')
-                      ]"
-                    />
-                  </v-col>
+                  </h3>
+                  <v-row no-gutters class="justify-center">
+                    <v-col cols="6" sm="4" md="2" v-for="maps in MapList" :key="maps.id">
+                      <v-checkbox
+                        v-model="seasonDefaults.map_pool"
+                        :value="maps.map_name"
+                        :label="maps.map_display_name"
+                        dense
+                        color="primary"
+                        :rules="[
+                          () =>
+                            seasonDefaults.map_pool.length > 0 ||
+                            $t('CreateMatch.MapChoiceError'),
+                          () =>
+                            seasonDefaults.map_pool.length >
+                              seasonDefaults.maps_to_win - 1 ||
+                            $t('CreateMatch.MapNotEnough')
+                        ]"
+                      />
+                    </v-col>
+                  </v-row>
+                </div>
+
+                <v-combobox
+                  v-model="seasonDefaults.spectators"
+                  :label="$t('CreateMatch.Spectators')"
+                  ref="matchspecs"
+                  :hint="$t('Team.AuthHint')"
+                  multiple
+                  chips
+                  filled
+                  class="custom-field mb-6"
+                  deletable-chips
+                />
+
+                <v-row class="justify-center align-center mb-6">
+                  <v-switch
+                    v-model="seasonDefaults.skip_veto"
+                    :label="$t('CreateMatch.SkipVeto')"
+                    color="secondary"
+                    inset
+                    ref="skipveto"
+                  />
                 </v-row>
-                <v-col cols="12" class="text-center text-h6">
-                  {{ $t("CreateMatch.Spectators") }}
-                </v-col>
-                <v-row class="justify-center">
-                  <v-col cols="12">
-                    <v-combobox
-                      v-model="seasonDefaults.spectators"
-                      :label="$t('CreateMatch.Spectators')"
-                      ref="matchspecs"
-                      :hint="$t('Team.AuthHint')"
-                      multiple
-                      chips
-                      deletable-chips
-                    />
-                  </v-col>
-                </v-row>
-                <v-row class="justify-center">
-                  <v-col cols="2">
-                    <v-switch
-                      v-model="seasonDefaults.skip_veto"
-                      :label="$t('CreateMatch.SkipVeto')"
-                      ref="skipveto"
-                    />
-                  </v-col>
-                </v-row>
-                <v-row class="justify-center">
+
+                <div class="text-center mb-8">
                   <v-radio-group
                     v-model="seasonDefaults.side_type"
                     row
-                    class="justify-center"
+                    class="justify-center mt-0"
                   >
-                    <v-col lg="4" sm="12" align-self="center">
-                      <v-radio
-                        :label="$t('CreateMatch.KnifeDefault')"
-                        :value="'standard'"
-                      />
-                    </v-col>
-                    <v-col lg="4" sm="12" align-self="center">
-                      <v-radio
-                        :label="$t('CreateMatch.KnifeNever')"
-                        :value="'never_knife'"
-                      />
-                    </v-col>
-                    <v-col lg="4" sm="12" align-self="center">
-                      <v-radio
-                        :label="$t('CreateMatch.KnifeAlways')"
-                        :value="'always_knife'"
-                      />
-                    </v-col>
+                    <v-radio :label="$t('CreateMatch.KnifeDefault')" value="standard" color="primary" class="mx-4" />
+                    <v-radio :label="$t('CreateMatch.KnifeNever')" value="never_knife" color="primary" class="mx-4" />
+                    <v-radio :label="$t('CreateMatch.KnifeAlways')" value="always_knife" color="primary" class="mx-4" />
                   </v-radio-group>
-                </v-row>
+                </div>
+
                 <v-row class="justify-center" v-if="seasonDefaults.skip_veto">
                   <v-col
-                    lg="3"
-                    md="12"
-                    sm="12"
+                    cols="12" sm="6" md="4"
                     v-for="(entity, index) in seasonDefaults.maps_to_win"
                     :key="index"
+                    class="glass-panel ma-2 rounded-lg pa-4 border-glow"
                   >
-                    <v-col class="text-left text-h6">
+                    <div class="font-orbitron primary--text subtitle-2 mb-3">
                       {{
                         $t("CreateMatch.MapSides", {
                           map:
                             seasonDefaults.map_pool[index] == null
-                              ? entity
+                              ? (index + 1)
                               : seasonDefaults.map_pool[index]
                         })
                       }}
-                    </v-col>
+                    </div>
                     <v-radio-group
-                      row
                       v-model="seasonDefaults.map_sides[index]"
+                      class="mt-0"
                     >
-                      <v-col lg="12" sm="12" align-self="center">
-                        <v-radio
-                          :label="$t('CreateMatch.MapSidesTeam1CT')"
-                          :value="'team1_ct'"
-                        />
-                      </v-col>
-                      <v-col lg="12" sm="12" align-self="center">
-                        <v-radio
-                          :label="$t('CreateMatch.MapSidesTeam2CT')"
-                          :value="'team1_t'"
-                        />
-                      </v-col>
-                      <v-col lg="12" sm="12" align-self="center">
-                        <v-radio
-                          :label="$t('CreateMatch.MapSidesKnife')"
-                          :value="'knife'"
-                        />
-                      </v-col>
+                      <v-radio :label="$t('CreateMatch.MapSidesTeam1CT')" value="team1_ct" color="primary" dense />
+                      <v-radio :label="$t('CreateMatch.MapSidesTeam2CT')" value="team1_t" color="primary" dense />
+                      <v-radio :label="$t('CreateMatch.MapSidesKnife')" value="knife" color="primary" dense />
                     </v-radio-group>
                   </v-col>
                 </v-row>
-                <v-row class="pt-6">
-                  <v-col cols="12">
-                    <v-combobox
-                      v-model="newSeason.cvars"
-                      :label="$t('CreateMatch.FormCVARS')"
-                      ref="CVARs"
-                      :hint="$t('Seasons.CvarHint')"
-                      multiple
-                      chips
-                      deletable-chips
-                    />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+
+                <v-combobox
+                  v-model="newSeason.cvars"
+                  :label="$t('CreateMatch.FormCVARS')"
+                  ref="CVARs"
+                  :hint="$t('Seasons.CvarHint')"
+                  multiple
+                  chips
+                  filled
+                  class="custom-field"
+                  deletable-chips
+                />
+              </div>
+            </v-container>
           </v-form>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="darken-1" text @click="newDialog = false">
-            {{ $t("misc.Cancel") }}
-          </v-btn>
-          <v-btn color="primary" text @click="saveNewSeason()">
-            {{ $t("misc.Save") }}
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-container>
@@ -550,9 +537,6 @@ export default {
     }
   },
   methods: {
-    handleClick(event, item) {
-      window.open("/season/" + item.item.id);
-    },
     async GetSeasons() {
       try {
         let res;
@@ -806,26 +790,36 @@ export default {
         {
           text: "",
           value: "actions",
-          sortable: false
+          sortable: false,
+          align: "end"
         }
       ];
     }
   }
 };
 </script>
-<style lang="scss">
-tbody {
-  tr:hover {
-    background: #0a9489d6 !important;
-  }
-  td:first-child {
-    color: #d4e157;
-  }
+
+<style scoped>
+.border-bottom {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-</style>
-<style>
-tr:hover {
-  cursor:pointer;
-  color: #d4e157;
+
+.neon-btn {
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.neon-btn:hover {
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.opacity-80 {
+  opacity: 0.8;
+}
+
+.custom-field ::v-deep .v-input__slot {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px !important;
 }
 </style>

@@ -1,39 +1,42 @@
 <template>
-  <v-container fluid>
-    <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);"
+  <v-container fluid class="pa-0">
+    <v-data-table
       item-key="id"
-      class="elevation-1"
+      class="glass-table custom-table rounded-lg"
       :loading="isLoading"
       :loading-text="$t('misc.LoadText')"
       :headers="selectedHeaders"
       :items="servers"
       :sort-by="['id']"
       ref="ServersTable"
+      :items-per-page="10"
     >
       <template v-slot:top>
-        <v-toolbar flat>
-          {{ $t("MyServers.Title") }}
+        <div class="d-flex align-center px-4 py-2 border-bottom">
           <v-spacer />
           <v-btn
+            depressed
             color="secondary"
+            class="mr-2 white--text font-weight-black rounded-lg"
             @click="allServers = !allServers"
-            v-if="user.id != null"
+            v-if="user.id != null && user.id != -1"
+            small
           >
-            <div v-if="allServers">
-              {{ $t("MyServers.ShowMyServers") }}
-            </div>
-            <div v-else>
-              {{ $t("MyServers.ShowPublicServers") }}
-            </div>
+            <v-icon left size="18">{{ allServers ? 'mdi-account-check' : 'mdi-earth' }}</v-icon>
+            {{ allServers ? $t("MyServers.ShowMyServers") : $t("MyServers.ShowPublicServers") }}
           </v-btn>
           <v-btn
+            depressed
             color="primary"
+            class="black--text font-weight-black neon-btn rounded-lg"
             @click="newDialog = true"
-            v-if="user.id != null"
+            v-if="user.id != null && user.id != -1"
+            small
           >
+            <v-icon left size="18">mdi-plus</v-icon>
             {{ $t("MyServers.New") }}
           </v-btn>
-        </v-toolbar>
+        </div>
       </template>
       <template v-slot:item.rcon_password="{ item }">
         <v-text-field
@@ -43,59 +46,70 @@
           readonly
           @click:append="item.showRcon = !item.showRcon"
           v-if="item.rcon_password != null"
+          filled
+          dense
+          hide-details
+          class="custom-field my-1"
         />
       </template>
       <template v-slot:item.name="{ item }">
-        <router-link :to="{ path: '/user/' + item.user_id }">
+        <router-link :to="{ path: '/user/' + item.user_id }" class="secondary--text font-weight-bold hover-link">
           {{ item.name }}
         </router-link>
       </template>
       <template v-slot:item.public_server="{ item }">
-        <v-icon v-if="item.public_server == 1" color="green darken-2">
+        <v-icon v-if="item.public_server == 1" color="green accent-3">
           mdi-check-circle
         </v-icon>
-        <v-icon v-else color="red darken-2">
+        <v-icon v-else color="cyber-pink">
           mdi-close-circle
         </v-icon>
       </template>
       <template v-slot:item.status="{ item }">
         <v-btn
           small
+          depressed
           @click="checkStatus(item)"
           :color="item.colour"
+          class="font-weight-black rounded-lg"
           :loading="item.isLoading"
           :disabled="item.isLoading"
           v-if="
-            user.id != null && (IsAnyAdmin(user) || item.user_id == user.id)
+            user.id != null && user.id != -1 && (IsAnyAdmin(user) || item.user_id == user.id)
           "
         >
+          <v-icon left small>mdi-heart-pulse</v-icon>
           {{ $t("MyServers.Status") }}
         </v-btn>
       </template>
       <template v-slot:item.actions="{ item }">
         <div
           v-if="
-            user.id != null && (IsAnyAdmin(user) || item.user_id == user.id)
+            user.id != null && user.id != -1 && (IsAnyAdmin(user) || item.user_id == user.id)
           "
+          class="d-flex"
         >
-          <v-icon @click="deleteSelectedServer(item)">
-            mdi-delete
-          </v-icon>
-          <v-icon @click="editSelectedServer(item)">
-            mdi-pencil
-          </v-icon>
+          <v-btn icon small @click="editSelectedServer(item)" class="mr-2">
+            <v-icon color="primary" small>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn icon small @click="deleteSelectedServer(item)">
+            <v-icon color="cyber-pink" small>mdi-delete</v-icon>
+          </v-btn>
         </div>
       </template>
       <template v-slot:item.flag="{ item }">
-        <img :src="get_flag_link(item)" style="border-radius: 5px;" />
+        <img :src="get_flag_link(item)" style="border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.5);" />
       </template>
     </v-data-table>
     <v-bottom-sheet v-model="responseSheet" inset persistent>
-      <v-sheet class="text-center" height="200px">
+      <v-sheet class="text-center glass-card pa-8 border-top" height="200px">
+        <div class="white--text title mb-6">
+          {{ response }}
+        </div>
         <v-btn
-          class="mt-6"
-          text
-          color="success"
+          depressed
+          color="primary"
+          class="black--text font-weight-black px-8 rounded-lg"
           @click="
             responseSheet = !responseSheet;
             response = '';
@@ -103,24 +117,21 @@
         >
           {{ $t("misc.Close") }}
         </v-btn>
-        <div class="my-3">
-          {{ response }}
-        </div>
       </v-sheet>
     </v-bottom-sheet>
     <v-dialog v-model="deleteDialog" persistent max-width="600px">
-      <v-card>
+      <v-card class="glass-card pa-4 border-glow">
         <v-card-title>
-          <span class="headline">
+          <span class="font-orbitron cyber-pink--text headline title-glow">
             {{ $t("MyServers.DeleteConfirmation") }}
           </span>
         </v-card-title>
-        <v-card-actions>
+        <v-card-actions class="mt-4">
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="deleteDialog = false">
+          <v-btn color="grey lighten-1" text @click="deleteDialog = false" class="font-weight-black">
             {{ $t("misc.No") }}
           </v-btn>
-          <v-btn color="red darken-1" text @click="deleteServerConfirm()">
+          <v-btn color="cyber-pink" depressed class="black--text font-weight-black px-6 rounded-lg" @click="deleteServerConfirm()">
             {{ $t("misc.Yes") }}
           </v-btn>
         </v-card-actions>
@@ -347,3 +358,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.border-bottom {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neon-btn {
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.neon-btn:hover {
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.5);
+  transform: translateY(-2px);
+}
+</style>

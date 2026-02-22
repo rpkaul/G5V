@@ -1,8 +1,8 @@
 <template>
-  <v-container class="TeamLeaderboard" fluid>
-    <v-data-table style="background-image: linear-gradient(to right top, #052437, #004254, #006364, #1a8264, #689f59);border-radius:20px;"
+  <v-container class="TeamLeaderboard px-0" fluid>
+    <v-data-table
       item-key="index"
-      class="elevation-1"
+      class="glass-table custom-table"
       :loading="isLoading"
       :loading-text="$t('misc.LoadText')"
       :headers="headers"
@@ -11,10 +11,16 @@
       :sort-desc="['wins']"
       ref="TeamLeaderboardTable"
     >
-      <template v-slot:top>
-        <v-toolbar flat style="border-top-left-radius:20px;border-top-right-radius: 20px;">
-          {{ $t("Leaderboard.TTitle") }}
-        </v-toolbar>
+      <template v-slot:item.name="{ item }">
+        <span class="white--text font-weight-black">{{ item.name }}</span>
+      </template>
+
+      <template v-slot:item.wins="{ item }">
+        <span class="success--text font-weight-black">{{ item.wins }}</span>
+      </template>
+
+      <template v-slot:item.losses="{ item }">
+        <span class="error--text font-weight-bold">{{ item.losses }}</span>
       </template>
     </v-data-table>
   </v-container>
@@ -84,13 +90,6 @@ export default {
 };
 </script>
 
-<style lang="scss">
-tbody {
-  tr:hover {
-    background: #0a9489d6 !important;
-  }
-  td:first-child {
-    color: #d4e157;
-  }
-}
+<style scoped>
+/* Redundant table styles removed in favor of global App.vue styles */
 </style>

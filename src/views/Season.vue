@@ -1,46 +1,45 @@
 <template>
-  <v-container class="season" fluid>
-    <v-card>
-      <v-row>
-        <v-col cols="12">
-          <v-card-title
-            v-if="seasonData.start_date != null && seasonData.end_date != null"
-          >
-            {{ seasonData.name }}
+  <v-container class="season-dashboard pa-6" fluid>
+    <v-row justify="center">
+      <v-col cols="12" xl="10">
+        <v-card class="glass-card pa-6 mb-6">
+          <div class="d-flex align-center flex-wrap mb-6">
+            <v-icon color="accent" class="mr-3" size="32">mdi-trophy</v-icon>
+            <h1 class="font-orbitron white--text headline mr-4 mb-0">{{ seasonData.name }}</h1>
+            
+            <v-chip-group v-if="seasonData.start_date">
+              <v-chip color="primary" label outlined small class="mr-2">
+                {{ isStarted.toUpperCase() }}: {{ new Date(seasonData.start_date).toLocaleDateString() }}
+              </v-chip>
+              <v-chip v-if="seasonData.end_date" color="secondary" label outlined small>
+                {{ isEnding.toUpperCase() }}: {{ new Date(seasonData.end_date).toLocaleDateString() }}
+              </v-chip>
+            </v-chip-group>
+
             <v-spacer />
-            {{ isStarted }}:
-            {{ new Date(seasonData.start_date).toLocaleDateString("en-CA") }}
-            <br />
-            {{ isEnding }}:
-            {{ new Date(seasonData.end_date).toLocaleDateString("en-CA") }}
-          </v-card-title>
-          <v-card-title
-            v-else-if="
-              seasonData.start_date != null && seasonData.end_date == null
-            "
-          >
-            {{ seasonData.name }}
-            <v-spacer />
-            {{ isStarted }}:
-            {{ new Date(seasonData.start_date).toLocaleDateString("en-CA") }}
-          </v-card-title>
-          <v-card-title v-else>
-            {{ seasonData.name }}
-          </v-card-title>
-          <v-card-title>
-            <v-btn :to="`/leaderboard/${seasonData.id}`">
-              {{ $t("misc.PLeader") }}
-            </v-btn>
-            <v-btn :to="`/leaderboard/teams/${seasonData.id}`">
-              {{ $t("Leaderboard.TTitle") }}
-            </v-btn>
-          </v-card-title>
-        </v-col>
-        <v-col cols="12">
+            
+            <div class="d-flex">
+              <v-btn depressed color="primary" class="black--text font-weight-bold mr-2" rounded :to="`/leaderboard/${seasonData.id}`">
+                <v-icon left>mdi-medal</v-icon>
+                {{ $t("misc.PLeader") }}
+              </v-btn>
+              <v-btn depressed outlined color="secondary" class="font-weight-bold" rounded :to="`/leaderboard/teams/${seasonData.id}`">
+                <v-icon left>mdi-account-group</v-icon>
+                {{ $t("Leaderboard.TTitle") }}
+              </v-btn>
+            </div>
+          </div>
+
+          <v-divider class="my-6 opacity-10" />
+          
+          <div class="d-flex align-center mb-6 px-4">
+            <v-icon color="primary" class="mr-2">mdi-sword-cross</v-icon>
+            <span class="font-orbitron white--text subtitle-1">Season Matches</span>
+          </div>
           <MatchesTable :user="user" />
-        </v-col>
-      </v-row>
-    </v-card>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
