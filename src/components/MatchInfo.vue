@@ -3,7 +3,7 @@
     <v-row justify="center" align="center" class="mb-8">
       <!-- Team 1 -->
       <v-col cols="12" md="4" class="text-center">
-        <router-link :to="'/team/' + matchInfo.team1_id" class="text-decoration-none link-glow">
+        <router-link :to="'/teams/' + matchInfo.team1_id" class="text-decoration-none link-glow">
           <v-avatar size="100" class="neon-halo mb-4">
             <v-img 
               :src="matchInfo.team1.logo ? apiUrl + '/static/img/logos/' + matchInfo.team1.logo + '.png' : get_flag_link(matchInfo.team1)" 
@@ -32,7 +32,7 @@
 
       <!-- Team 2 -->
       <v-col cols="12" md="4" class="text-center">
-        <router-link :to="'/team/' + matchInfo.team2_id" class="text-decoration-none link-glow">
+        <router-link :to="'/teams/' + matchInfo.team2_id" class="text-decoration-none link-glow">
           <v-avatar size="100" class="neon-halo mb-4">
             <v-img 
               :src="matchInfo.team2.logo ? apiUrl + '/static/img/logos/' + matchInfo.team2.logo + '.png' : get_flag_link(matchInfo.team2)" 
