@@ -393,7 +393,15 @@ export default {
 
 .v-main {
   background-image: 
-    radial-gradient(circle at 50% 50%, rgba(112, 0, 255, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 0% 0%, rgba(0, 242, 255, 0.05) 0%, transparent 40%);
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(112, 0, 255, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(0, 242, 255, 0.05) 0%,
+      transparent 40%
+    );
 }
 </style>
