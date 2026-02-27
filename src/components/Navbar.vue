@@ -82,7 +82,7 @@
             color="primary"
             class="black--text font-weight-black ml-4 nav-create-btn"
             rounded
-            to="/match/create"
+            :to="{ path: '/match/create', query: { season_id: $route.params.id || $route.query.season_id || undefined } }"
           >
             <v-icon left>mdi-sword</v-icon>
             {{ $t("Navbar.CreateMatch") }}

@@ -15,7 +15,7 @@
       </v-col>
 
       <!-- Score & Status -->
-      <v-col cols="12" md="4" class="text-center">
+      <v-col cols="12" md="4" class="text-center d-flex flex-column align-center justify-center">
         <div class="score-container mb-2">
           <span class="score-value">{{ matchInfo.team1_score }}</span>
           <span class="score-divider mx-4">:</span>
@@ -24,9 +24,17 @@
         <v-chip :color="getStatusColor" label outlined small class="status-chip mb-4">
           {{ getStatusLabel }}
         </v-chip>
-        <div class="match-meta grey--text text-caption font-weight-bold">
+        <div class="match-meta grey--text text-caption font-weight-bold d-flex flex-column align-center">
           <div>{{ matchInfo.start_time }}</div>
           <div v-if="matchInfo.match_title">{{ matchInfo.match_title }}</div>
+          <router-link 
+            v-if="matchInfo.season_id" 
+            :to="'/season/' + matchInfo.season_id" 
+            class="mt-2 text-decoration-none secondary--text font-orbitron d-flex align-center"
+          >
+            <v-icon small color="secondary" class="mr-1">mdi-trophy</v-icon>
+            {{ matchInfo.season_name ? matchInfo.season_name : ($t("Navbar.Seasons") || 'Season') }}
+          </router-link>
         </div>
       </v-col>
 
@@ -139,7 +147,9 @@ export default {
         cancelled: 0,
         forfeit: 0,
         id: -1,
-        user_id: -1
+        user_id: -1,
+        season_id: null,
+        season_name: ""
       },
       serverInfo: {
         ip_string: "",
@@ -227,6 +237,13 @@ export default {
         this.matchInfo.forfeit = serverResponse.forfeit;
         this.matchInfo.id = this.match_id;
         this.matchInfo.user_id = serverResponse.user_id;
+        this.matchInfo.season_id = serverResponse.season_id;
+        if (this.matchInfo.season_id) {
+          let seasonData = await this.GetSeasonInfo(this.matchInfo.season_id);
+          if (seasonData && seasonData.name) {
+            this.matchInfo.season_name = seasonData.name;
+          }
+        }
         if (serveRes) {
           this.serverInfo.ip_string = serveRes.ip_string;
           this.serverInfo.port = serveRes.port;

@@ -154,8 +154,8 @@
                   <span>{{ $t("CreateMatch.FormMapExplanation") }}</span>
                 </v-tooltip>
               </h3>
-              <v-row no-gutters class="justify-center">
-                <v-col cols="6" sm="4" md="2" v-for="maps in MapList" :key="maps.id">
+              <v-row no-gutters class="justify-center map-pool-row">
+                <v-col class="map-col" v-for="maps in MapList" :key="maps.id">
                   <v-checkbox
                     v-model="newMatchData.map_pool"
                     :value="maps.map_name"
@@ -225,14 +225,13 @@
             </div>
 
             <div v-if="newMatchData.skip_veto" class="text-center mb-6">
-              <v-row class="justify-center">
-                <v-col
-                  cols="12" sm="6" md="4"
+              <v-row class="justify-center map-preset-row">
+                <div
                   v-for="(entity, index) in newMatchData.maps_to_win"
                   :key="index"
-                  class="glass-panel ma-2 rounded-lg pa-4"
+                  class="glass-panel rounded-lg pa-4 map-preset-col"
                 >
-                  <div class="font-orbitron primary--text mb-2">
+                  <div class="map-preset-title mb-4">
                     {{ $t("CreateMatch.MapSides", { map: newMatchData.map_pool[index] || (index+1) }) }}
                   </div>
                   <v-radio-group v-model="newMatchData.map_sides[index]" class="mt-0">
@@ -240,7 +239,7 @@
                     <v-radio :label="team2Name + ' ' + $t('CreateMatch.MapSidesCT')" value="team2_ct" />
                     <v-radio :label="$t('CreateMatch.MapSidesKnife')" value="knife" />
                   </v-radio-group>
-                </v-col>
+                </div>
               </v-row>
             </div>
 
@@ -295,17 +294,7 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        v-if="step === 3"
-        color="primary"
-        class="black--text font-orbitron font-weight-black px-8 py-6 elevation-8 neon-btn-active"
-        @click="callCreateMatch"
-        :loading="isLoading"
-      >
-        <v-icon left size="20">mdi-sword</v-icon>
-        {{ $t("Matches.CreateMatch") }}
-      </v-btn>
-      <v-btn
-        v-else
+        v-if="step !== 3"
         color="primary"
         class="black--text font-weight-black px-10"
         depressed
@@ -519,6 +508,9 @@ export default {
     this.seasons = await this.GetMyAvailableSeasons();
     if (typeof this.seasons == "string") this.seasons = [];
     this.MapList = await this.GetUserEnabledMapList(this.user.id);
+    if (this.$route.query.season_id) {
+      this.selectedSeason = parseInt(this.$route.query.season_id);
+    }
   },
   methods: {
     async ReloadServers() {
@@ -662,4 +654,35 @@ export default {
 .opacity-70 { opacity: 0.7; }
 .m-b6 { margin-bottom: 24px; }
 .border-glow { border-color: rgba(0, 242, 255, 0.1) !important; }
+
+.map-pool-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.map-col {
+  flex: 0 0 calc(14.28% - 10px); /* 100% / 7 items */
+  max-width: calc(14.28% - 10px);
+  min-width: 120px; /* Prevent shrinking too small on mobile */
+}
+
+.map-preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0 16px;
+}
+.map-preset-col {
+  flex: 0 0 calc(33.333% - 16px);
+  max-width: calc(33.333% - 16px);
+  min-width: 250px;
+}
+
+.map-preset-title {
+  font-family: 'Orbitron', sans-serif !important;
+  color: #00f2ff !important; /* Force Cyan */
+  font-size: 1.1rem !important; /* Increase from standard subtitle */
+  text-transform: capitalize !important; /* Override uppercase if inherited */
+  letter-spacing: 0.5px;
+}
 </style>

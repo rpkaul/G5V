@@ -11,7 +11,7 @@
           lg="3"
           class="d-flex"
         >
-          <v-card class="glass-card d-flex flex-column" style="width: 100%;">
+          <v-card class="glass-card d-flex flex-column overflow-hidden" style="width: 100%; min-height: 280px;">
             <div class="flex-grow-1">
               <v-card-title class="font-orbitron primary--text"> {{ mapInfo.map_display_name }} </v-card-title>
               <v-card-subtitle class="pb-0">
@@ -88,18 +88,26 @@
                       hide-details
                     />
                   </v-card-subtitle>
-                  <v-card-actions class="pa-4 pt-2 mt-auto">
+                  <v-card-actions class="d-flex flex-column pa-4 pt-2 mt-auto gap-2">
                     <v-btn
                       depressed
                       block
                       color="secondary"
-                      class="neon-btn-small"
+                      class="neon-btn-small mb-2"
                       @click="
                         UpdateMapInfo(mapInfo);
                         mapInfo.reveal = false;
                       "
                     >
                       {{ $t("User.MapSave") }}
+                    </v-btn>
+                    <v-btn
+                      text
+                      block
+                      color="grey lighten-1"
+                      @click="mapInfo.reveal = false"
+                    >
+                      {{ $t("misc.Cancel") }}
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -143,7 +151,7 @@
     </v-dialog>
     <v-row>
       <v-col cols="12" sm="12" md="12" lg="3" class="d-flex">
-        <v-card class="glass-card d-flex flex-column" style="width: 100%;">
+        <v-card class="glass-card d-flex flex-column overflow-hidden" style="width: 100%; min-height: 280px;">
           <div class="flex-grow-1">
             <v-card-title class="font-orbitron primary--text"> {{ $t("User.MapNew") }} </v-card-title>
           </div>
@@ -207,14 +215,7 @@
                     text
                     block
                     color="grey lighten-1"
-                    @click="
-                      newMap = {
-                        map_display_name: '',
-                        map_name: '',
-                        enabled: true
-                      };
-                      newMapReveal = false;
-                    "
+                    @click="cancelNewMap"
                   >
                     {{ $t("misc.Cancel") }}
                   </v-btn>
@@ -317,6 +318,14 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    cancelNewMap() {
+      this.newMap = {
+        map_display_name: "",
+        map_name: "",
+        enabled: true
+      };
+      this.newMapReveal = false;
     }
   }
 };

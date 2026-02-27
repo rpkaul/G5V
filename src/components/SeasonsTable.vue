@@ -340,8 +340,8 @@
                       <span>{{ $t("CreateMatch.FormMapExplanation") }}</span>
                     </v-tooltip>
                   </h3>
-                  <v-row no-gutters class="justify-center">
-                    <v-col cols="6" sm="4" md="2" v-for="maps in MapList" :key="maps.id">
+                  <v-row no-gutters class="justify-center map-pool-row">
+                    <v-col class="map-col" v-for="maps in MapList" :key="maps.id">
                       <v-checkbox
                         v-model="seasonDefaults.map_pool"
                         :value="maps.map_name"
@@ -396,14 +396,13 @@
                   </v-radio-group>
                 </div>
 
-                <v-row class="justify-center" v-if="seasonDefaults.skip_veto">
-                  <v-col
-                    cols="12" sm="6" md="4"
+                <v-row class="justify-center map-preset-row" v-if="seasonDefaults.skip_veto">
+                  <div
                     v-for="(entity, index) in seasonDefaults.maps_to_win"
                     :key="index"
-                    class="glass-panel ma-2 rounded-lg pa-4 border-glow"
+                    class="glass-panel rounded-lg pa-4 border-glow map-preset-col"
                   >
-                    <div class="font-orbitron primary--text subtitle-2 mb-3">
+                    <div class="map-preset-title mb-4">
                       {{
                         $t("CreateMatch.MapSides", {
                           map:
@@ -418,10 +417,10 @@
                       class="mt-0"
                     >
                       <v-radio :label="$t('CreateMatch.MapSidesTeam1CT')" value="team1_ct" color="primary" dense />
-                      <v-radio :label="$t('CreateMatch.MapSidesTeam2CT')" value="team1_t" color="primary" dense />
+                      <v-radio :label="$t('CreateMatch.MapSidesTeam2CT')" value="team2_ct" color="primary" dense />
                       <v-radio :label="$t('CreateMatch.MapSidesKnife')" value="knife" color="primary" dense />
                     </v-radio-group>
-                  </v-col>
+                  </div>
                 </v-row>
 
                 <v-combobox
@@ -821,5 +820,30 @@ export default {
   background: rgba(255, 255, 255, 0.03) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px !important;
+}
+
+.map-pool-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.map-col {
+  flex: 0 0 calc(14.28% - 10px); /* 100% / 7 items */
+  max-width: calc(14.28% - 10px);
+  min-width: 120px; /* Prevent shrinking too small on mobile */
+}
+
+.map-preset-col {
+  flex: 0 0 calc(33.333% - 16px);
+  max-width: calc(33.333% - 16px);
+  min-width: 250px;
+}
+
+.map-preset-title {
+  font-family: 'Orbitron', sans-serif !important;
+  color: #00f2ff !important; /* Force Cyan */
+  font-size: 1.1rem !important; /* Increase from standard subtitle */
+  text-transform: capitalize !important; /* Override uppercase if inherited */
+  letter-spacing: 0.5px;
 }
 </style>
