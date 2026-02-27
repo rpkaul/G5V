@@ -1,15 +1,14 @@
 <template>
   <v-app>
     <!-- Dynamic Top Navbar -->
-    <Navbar :user="user" :nav-links="navLinks" @toggle-drawer="drawer = !drawer" />
+    <Navbar
+      :user="user"
+      :nav-links="navLinks"
+      @toggle-drawer="drawer = !drawer"
+    />
 
     <!-- Mobile Drawer -->
-    <v-navigation-drawer
-      v-model="drawer"
-      fixed
-      temporary
-      class="glass-sidebar"
-    >
+    <v-navigation-drawer v-model="drawer" fixed temporary class="glass-sidebar">
       <div class="pa-6 d-flex flex-column fill-height">
         <v-list nav class="flex-grow-1">
           <template v-for="(group, gIdx) in navLinks">
@@ -21,7 +20,9 @@
               class="mb-1"
             >
               <template v-slot:activator>
-                <v-list-item-title class="text-uppercase font-weight-bold">{{ group.title }}</v-list-item-title>
+                <v-list-item-title class="text-uppercase font-weight-bold">{{
+                  group.title
+                }}</v-list-item-title>
               </template>
 
               <v-list-item
@@ -31,8 +32,14 @@
                 exact
                 class="pl-8 mb-1"
               >
-                <v-list-item-icon><v-icon x-small color="primary">{{ item.icon }}</v-icon></v-list-item-icon>
-                <v-list-item-title class="text-uppercase">{{ item.title }}</v-list-item-title>
+                <v-list-item-icon
+                  ><v-icon x-small color="primary">{{
+                    item.icon
+                  }}</v-icon></v-list-item-icon
+                >
+                <v-list-item-title class="text-uppercase">{{
+                  item.title
+                }}</v-list-item-title>
               </v-list-item>
             </v-list-group>
 
@@ -43,8 +50,14 @@
               exact
               class="mb-2"
             >
-              <v-list-item-icon><v-icon color="primary">{{ group.icon }}</v-icon></v-list-item-icon>
-              <v-list-item-title class="text-uppercase font-weight-bold">{{ group.title }}</v-list-item-title>
+              <v-list-item-icon
+                ><v-icon color="primary">{{
+                  group.icon
+                }}</v-icon></v-list-item-icon
+              >
+              <v-list-item-title class="text-uppercase font-weight-bold">{{
+                group.title
+              }}</v-list-item-title>
             </v-list-item>
           </template>
         </v-list>
@@ -91,33 +104,61 @@ export default {
           title: this.$t("Navbar.Matches"),
           icon: "mdi-sword-cross",
           items: [
-            { title: this.$t("Navbar.AllMatches"), to: "/matches", icon: "mdi-format-list-bulleted" }
+            {
+              title: this.$t("Navbar.AllMatches"),
+              to: "/matches",
+              icon: "mdi-format-list-bulleted"
+            }
           ]
         },
         {
           title: this.$t("Navbar.Teams"),
           icon: "mdi-account-group",
           items: [
-            { title: this.$t("Navbar.AllTeams"), to: "/teams", icon: "mdi-format-list-bulleted" },
-            { title: this.$t("Navbar.PlayerLeader"), to: "/leaderboard", icon: "mdi-chart-bar" }
+            {
+              title: this.$t("Navbar.AllTeams"),
+              to: "/teams",
+              icon: "mdi-format-list-bulleted"
+            },
+            {
+              title: this.$t("Navbar.PlayerLeader"),
+              to: "/leaderboard",
+              icon: "mdi-chart-bar"
+            }
           ]
         },
         {
           title: this.$t("Navbar.Seasons"),
           icon: "mdi-trophy",
           items: [
-            { title: this.$t("Navbar.AllSeasons"), to: "/seasons", icon: "mdi-calendar-check" }
+            {
+              title: this.$t("Navbar.AllSeasons"),
+              to: "/seasons",
+              icon: "mdi-calendar-check"
+            }
           ]
         }
       ];
 
       if (this.user.id != null && this.user.id != -1) {
         // Matches group
-        groups[0].items.push({ title: this.$t("Navbar.MyMatches"), to: "/mymatches", icon: "mdi-history" });
+        groups[0].items.push({
+          title: this.$t("Navbar.MyMatches"),
+          to: "/mymatches",
+          icon: "mdi-history"
+        });
         // Teams group
-        groups[1].items.push({ title: this.$t("Navbar.MyTeams"), to: "/myteams", icon: "mdi-account-star" });
+        groups[1].items.push({
+          title: this.$t("Navbar.MyTeams"),
+          to: "/myteams",
+          icon: "mdi-account-star"
+        });
         // Seasons group
-        groups[2].items.push({ title: this.$t("Navbar.MySeasons"), to: "/myseasons", icon: "mdi-trophy-variant" });
+        groups[2].items.push({
+          title: this.$t("Navbar.MySeasons"),
+          to: "/myseasons",
+          icon: "mdi-trophy-variant"
+        });
         // Add Servers
         groups.push({
           title: this.$t("Navbar.MyServers"),
