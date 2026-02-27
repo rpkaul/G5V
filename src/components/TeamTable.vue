@@ -534,7 +534,7 @@ export default {
         name: "New Team",
         flag: "",
         logo: "",
-        tag: this.$t("Team.NewTag"),
+        tag: "",
         public: 0,
         owner: this.user.name,
         owner_id: this.user.id
