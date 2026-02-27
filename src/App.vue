@@ -170,8 +170,8 @@ export default {
       return groups;
     },
     brandingName() {
-      return this.$t("Navbar.BrandingName") !== "Navbar.BrandingName" 
-        ? this.$t("Navbar.BrandingName") 
+      return this.$t("Navbar.BrandingName") !== "Navbar.BrandingName"
+        ? this.$t("Navbar.BrandingName")
         : "G5V";
     }
   },
@@ -186,7 +186,7 @@ export default {
   async mounted() {
     this.user = await this.IsLoggedIn();
   }
-}
+};
 </script>
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@400;700&display=swap");
@@ -202,12 +202,13 @@ export default {
 .v-application {
   font-family: "Inter", sans-serif !important;
   background-color: #070709 !important;
-  
+
   .font-orbitron {
     font-family: "Orbitron", sans-serif !important;
   }
   
-  .headline, .title {
+  .headline,
+  .title {
     text-transform: uppercase;
     letter-spacing: 2px !important;
   }
@@ -222,7 +223,7 @@ export default {
 .sidebar-active {
   background: rgba(0, 242, 255, 0.1) !important;
   border-right: 3px solid var(--neon-cyan);
-  
+
   .v-list-item__title {
     color: var(--neon-cyan) !important;
     text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
@@ -294,7 +295,7 @@ export default {
 .hover-link {
   text-decoration: none;
   transition: all 0.2s ease;
-  
+
   &:hover {
     filter: brightness(1.2);
     text-shadow: 0 0 8px currentColor;
@@ -304,7 +305,7 @@ export default {
 .neon-btn-small {
   box-shadow: 0 0 10px rgba(0, 242, 255, 0.2) !important;
   transition: all 0.3s ease !important;
-  
+
   &:hover {
     box-shadow: 0 0 20px rgba(0, 242, 255, 0.5) !important;
     transform: translateY(-1px);
@@ -316,7 +317,7 @@ export default {
   backdrop-filter: blur(20px) !important;
   border: 1px solid var(--glass-border) !important;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5) !important;
-  
+
   .v-card__title {
     font-family: "Orbitron", sans-serif !important;
     color: var(--neon-cyan) !important;
@@ -330,7 +331,9 @@ export default {
 .v-text-field--filled > .v-input__control > .v-input__slot {
   background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  &:hover { background: rgba(255, 255, 255, 0.08) !important; }
+  &:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
 }
 
 .v-input--is-focused > .v-input__control > .v-input__slot {
@@ -338,9 +341,15 @@ export default {
   box-shadow: 0 0 10px rgba(0, 242, 255, 0.2) !important;
 }
 
-.v-select__selections { color: white !important; }
-.v-list { background: rgba(13, 13, 17, 0.95) !important; }
-.v-list-item__title { color: white !important; }
+.v-select__selections {
+  color: white !important;
+}
+.v-list {
+  background: rgba(13, 13, 17, 0.95) !important;
+}
+.v-list-item__title {
+  color: white !important;
+}
 
 /* Stepper Customization */
 .v-stepper {
