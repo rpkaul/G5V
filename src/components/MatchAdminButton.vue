@@ -93,7 +93,7 @@
     <v-bottom-sheet v-model="responseSheet" inset persistent scrollable>
       <v-card class="glass-card">
         <v-card-text class="pt-4" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
-          <pre class="white--text text-left pa-3" style="font-family: Consolas, monospace; white-space: pre-wrap; font-size: 0.85rem; background: rgba(0, 0, 0, 0.6); border-radius: 8px; border: 1px solid rgba(0, 242, 255, 0.2);">{{ response }}</pre>
+          <pre class="white--text text-left pa-3" style="font-family: Consolas, monospace; white-space: pre-wrap; font-size: 0.85rem; background: rgba(0, 0, 0, 0.6); border-radius: 8px; border: 1px solid rgba(0, 242, 255, 0.2);">{{ response.replace(/\\n/g, '\n') }}</pre>
         </v-card-text>
         <v-card-actions class="justify-center pb-4">
           <v-btn
@@ -300,6 +300,20 @@
                     required
                     :rules="[() => !!rconCommand || $t('misc.Required')]"
                   />
+                  <div class="mt-4 mb-2 text-caption grey--text text--lighten-1 font-weight-bold">QUICK COMMANDS:</div>
+                  <v-chip-group column>
+                    <v-chip
+                      v-for="cmd in ['status', 'get5_status', 'tv_delay', 'tv_delay1', 'tv_status', 'logaddress_list_http', 'matchzy_kick_when_no_match_loaded']"
+                      :key="cmd"
+                      class="mr-2 mb-2 font-weight-bold neon-btn-small"
+                      color="secondary"
+                      outlined
+                      small
+                      @click="rconCommand = cmd"
+                    >
+                      {{ cmd }}
+                    </v-chip>
+                  </v-chip-group>
                 </v-col>
               </v-row>
             </v-container>
