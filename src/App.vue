@@ -290,15 +290,21 @@ export default {
   tr:hover {
     background: rgba(255, 255, 255, 0.02) !important;
   }
+
+  tr.v-row-group__header,
+  tbody tr.v-row-group__header {
+    background: transparent !important;
+  }
 }
 
 .hover-link {
-  text-decoration: none;
+  text-decoration: none !important;
   transition: all 0.2s ease;
 
   &:hover {
     filter: brightness(1.2);
     text-shadow: 0 0 8px currentColor;
+    text-decoration: none !important;
   }
 }
 
@@ -340,6 +346,9 @@ export default {
   border-color: var(--neon-cyan) !important;
   box-shadow: 0 0 10px rgba(0, 242, 255, 0.2) !important;
 }
+
+/* Force Checkbox & Radio Labels White */
+/* Force Checkbox & Radio Labels White */
 
 .v-select__selections {
   color: white !important;
@@ -403,5 +412,47 @@ export default {
       rgba(0, 242, 255, 0.05) 0%,
       transparent 40%
     );
+}
+
+/* Date Picker Glass Theme Override */
+.v-picker.v-card {
+  background: rgba(13, 13, 17, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Header section with year and currently selected date */
+.v-picker__title {
+  background: rgba(0, 242, 255, 0.05) !important; 
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+/* Make internal table transparent so glassmorphism translates through */
+.v-date-picker-table {
+  background: transparent !important;
+}
+
+.v-date-picker-table table {
+  background: transparent !important;
+}
+
+/* Neon ring on the active selected date */
+.v-date-picker-table .v-btn.v-btn--active {
+  color: #000000 !important;
+  background-color: var(--neon-cyan) !important;
+  box-shadow: 0 0 10px rgba(0, 242, 255, 0.5) !important;
+}
+
+/* Current day (today) styling */
+.v-date-picker-table .v-btn--active.v-btn--text {
+  border: 1px solid var(--neon-cyan) !important;
+  color: var(--neon-cyan) !important;
+  background-color: transparent !important;
+}
+
+/* Range highlighting */
+.v-date-picker-table__events > div {
+  background-color: var(--neon-pink) !important;
 }
 </style>

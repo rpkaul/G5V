@@ -14,7 +14,7 @@
       <router-link
         :to="{ path: '/match/' + item.id }"
         v-if="item.match_status != 'Cancelled'"
-        class="primary--text font-weight-black"
+        class="primary--text font-weight-black text-decoration-none hover-link"
       >
         #{{ item.id }}
       </router-link>
@@ -27,7 +27,7 @@
       <router-link
         :to="{ path: '/teams/' + item.team1_id }"
         v-if="item.team1_id !== null"
-        class="white--text font-weight-bold"
+        class="white--text font-weight-bold text-decoration-none hover-link"
       >
         {{ item.team1_string }}
       </router-link>
@@ -40,12 +40,25 @@
       <router-link
         :to="{ path: '/teams/' + item.team2_id }"
         v-if="item.team2_id !== null"
-        class="white--text font-weight-bold"
+        class="white--text font-weight-bold text-decoration-none hover-link"
       >
         {{ item.team2_string }}
       </router-link>
       <div v-else class="white--text opacity-70">
         {{ item.team2_string }}
+      </div>
+    </template>
+
+    <template v-slot:item.season_name="{ item }">
+      <router-link
+        :to="{ path: '/season/' + item.season_id }"
+        v-if="item.season_id !== null"
+        class="primary--text font-weight-bold letter-spacing-1 text-decoration-none hover-link"
+      >
+        {{ item.season_name }}
+      </router-link>
+      <div v-else class="grey--text opacity-70">
+        -
       </div>
     </template>
 
@@ -60,6 +73,19 @@
         <v-icon left x-small v-if="item.match_status.includes('Live')">mdi-circle</v-icon>
         {{ item.match_status }}
       </v-chip>
+    </template>
+
+    <template v-slot:item.owner="{ item }">
+      <router-link
+        :to="{ path: '/user/' + item.user_id }"
+        v-if="item.user_id != null"
+        class="secondary--text font-weight-bold text-decoration-none hover-link"
+      >
+        {{ item.owner }}
+      </router-link>
+      <div v-else class="grey--text opacity-70">
+        {{ item.owner }}
+      </div>
     </template>
 
     <template v-slot:item.actions="{ item }">
@@ -95,6 +121,7 @@ export default {
   data() {
     return {
       matches: [],
+      seasons: [],
       isLoading: true,
       isThereCancelledMatches: false,
       totalMatches: -1,
@@ -127,6 +154,10 @@ export default {
           sortable: false
         },
         {
+          text: this.$t("Navbar.Seasons"),
+          value: "season_name"
+        },
+        {
           text: this.$t("Matches.Owner"),
           value: "owner"
         },
@@ -153,6 +184,12 @@ export default {
   methods: {
     async pushMatchData(resultArray) {
       this.isLoading = true;
+      if (this.seasons.length === 0) {
+        let allSeasons = await this.GetAllSeasons();
+        if (typeof allSeasons !== "string") {
+          this.seasons = allSeasons;
+        }
+      }
       let matches = [];
       let matchString;
       let team1Score,
@@ -186,6 +223,14 @@ export default {
         } else if (match.winner == match.team2_id) {
           matchString = `Forfeit loss vs ${match.team2_string}`;
         }
+        
+        if (match.season_id) {
+          const matchedSeason = this.seasons.find(s => s.id === match.season_id);
+          match.season_name = matchedSeason ? matchedSeason.name : `Season ${match.season_id}`;
+        } else {
+          match.season_name = "-";
+        }
+
         match.match_status = matchString;
         if (match.cancelled == 1) this.isThereCancelledMatches = true;
         await matches.push(match);

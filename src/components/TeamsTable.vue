@@ -39,17 +39,17 @@
         </div>
       </template>
       <template v-slot:item.id="{ item }">
-        <router-link :to="{ path: '/teams/' + item.id }" class="primary--text font-weight-black">
+        <router-link :to="{ path: '/teams/' + item.id }" class="primary--text font-weight-black text-decoration-none hover-link">
           #{{ item.id }}
         </router-link>
       </template>
       <template v-slot:item.name="{ item }">
-        <router-link :to="{ path: '/teams/' + item.id }" class="white--text font-weight-bold hover-link">
+        <router-link :to="{ path: '/teams/' + item.id }" class="white--text font-weight-bold text-decoration-none hover-link">
           {{ item.name }}
         </router-link>
       </template>
       <template v-slot:item.owner="{ item }">
-        <router-link :to="{ path: '/user/' + item.user_id }" class="secondary--text font-weight-bold">
+        <router-link :to="{ path: '/user/' + item.user_id }" class="secondary--text font-weight-bold text-decoration-none hover-link">
           {{ item.owner }}
         </router-link>
       </template>

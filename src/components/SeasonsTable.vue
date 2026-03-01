@@ -41,17 +41,17 @@
         </div>
       </template>
       <template v-slot:item.id="{ item }">
-        <router-link :to="{ path: '/season/' + item.id }" class="primary--text font-weight-black">
+        <router-link :to="{ path: '/season/' + item.id }" class="primary--text font-weight-black text-decoration-none hover-link">
           #{{ item.id }}
         </router-link>
       </template>
       <template v-slot:item.name="{ item }">
-        <router-link :to="{ path: '/season/' + item.id }" class="white--text font-weight-bold hover-link">
+        <router-link :to="{ path: '/season/' + item.id }" class="white--text font-weight-bold text-decoration-none hover-link">
           {{ item.name }}
         </router-link>
       </template>
       <template v-slot:item.owner="{ item }">
-        <router-link :to="{ path: '/user/' + item.user_id }" class="secondary--text font-weight-bold">
+        <router-link :to="{ path: '/user/' + item.user_id }" class="secondary--text font-weight-bold text-decoration-none hover-link">
           {{ item.owner }}
         </router-link>
       </template>
@@ -237,11 +237,10 @@
                           readonly
                           filled
                           class="custom-field"
-                          prepend-inner-icon="mdi-calendar"
+                          prepend-inner-icon="mdi-calendar-range"
                           :label="$t('Seasons.DateTitle')"
                           :rules="[
-                            v => !!v || $t('misc.Required'),
-                            rules.dateLessThan
+                            v => !!v || $t('misc.Required')
                           ]"
                         />
                       </template>
@@ -350,7 +349,7 @@
                         color="primary"
                         :rules="[
                           () =>
-                            seasonDefaults.map_pool.length > 0 ||
+                            seasonDefaults.map_pool.length >= 1 ||
                             $t('CreateMatch.MapChoiceError'),
                           () =>
                             seasonDefaults.map_pool.length >
@@ -435,6 +434,20 @@
                   deletable-chips
                 />
               </div>
+
+              <!-- Secondary Bottom Save Button -->
+              <v-row justify="center" class="mt-8">
+                <v-btn
+                  color="primary"
+                  depressed
+                  class="black--text font-weight-black px-10 rounded-lg elevation-4 neon-btn"
+                  @click="saveNewSeason()"
+                >
+                  <v-icon left>mdi-content-save</v-icon>
+                  {{ $t("misc.Save") }}
+                </v-btn>
+              </v-row>
+              
             </v-container>
           </v-form>
         </v-card-text>
@@ -461,7 +474,7 @@ export default {
       newImportDialog: false,
       newSeason: {
         name: "",
-        dates: [],
+        dates: [new Date().toISOString().substr(0, 10)],
         cvars: []
       },
       seasonDefaults: {
@@ -504,13 +517,7 @@ export default {
         this.$nextTick(() => {
           this.newSeason = {
             name: "",
-            dates: [
-              new Date()
-                .toISOString()
-                .substr(0, 10)
-                .slice(0, 19)
-                .replace("T", " ")
-            ],
+            dates: [new Date().toISOString().substr(0, 10)],
             cvars: []
           };
           this.seasonDefaults = {
@@ -663,13 +670,8 @@ export default {
         this.$nextTick(() => {
           this.newSeason = {
             name: "",
-            dates: [
-              new Date()
-                .toISOString()
-                .substr(0, 10)
-                .slice(0, 19)
-                .replace("T", " ")
-            ],
+            start_date: new Date().toISOString().substr(0, 10),
+            end_date: null,
             cvars: []
           };
           this.seasonDefaults = {
@@ -760,7 +762,16 @@ export default {
   },
   computed: {
     dateRangeText() {
-      return this.newSeason.dates.join(" ~ ");
+      if (!this.newSeason.dates || this.newSeason.dates.length === 0) return "";
+      let start = this.newSeason.dates[0] || "";
+      if (this.newSeason.dates.length === 1) return `Start: ${start}`;
+      
+      let d1 = new Date(this.newSeason.dates[0]);
+      let d2 = new Date(this.newSeason.dates[1]);
+      if (d1 > d2) {
+        return `Start: ${this.newSeason.dates[1]}  —  End: ${this.newSeason.dates[0]}`;
+      }
+      return `Start: ${this.newSeason.dates[0]}  —  End: ${this.newSeason.dates[1]}`;
     },
     headers() {
       return [

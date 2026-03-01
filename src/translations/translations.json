@@ -11,8 +11,6 @@
       "CreateTeam": "Create Team",
       "MyServers": "My Servers",
       "AddServer": "Add New Server",
-      "AllSeasons": "All Seasons",
-      "MySeasons": "My Seasons",
       "Logout": "Logout",
       "DarkMode": "Toggle Dark Mode",
       "PlayerLeader": "Player Leaderboard",
@@ -20,7 +18,10 @@
       "Welcome": "Welcome",
       "Teams": "Teams",
       "Matches": "Matches",
-      "Seasons": "Seasons"
+      "Seasons": "Tournaments",
+      "AllSeasons": "All Tournaments",
+      "MySeasons": "My Tournaments",
+      "TeamLeader": "Team Leaderboard"
     },
     "Login": {
       "title": "Login/Register",
@@ -81,7 +82,6 @@
     },
     "CreateMatch": {
       "FormServer": "Select a Server",
-      "FormSeason": "Select a Season",
       "ServerSelect": "Server",
       "FormDetail": "Fill Out Match Details",
       "FormError": "You should not be here!",
@@ -97,8 +97,6 @@
       "MessageRegisterSuccess": "Successfully registered match.",
       "ServerLabel": "Server",
       "ServerNote": "Not finding what you're looking for? Create it then select it!",
-      "SeasonLabel": "Season",
-      "SeasonNote": "No season to select? Then just press next!",
       "TeamRequired": "A team is required.",
       "TeamCannotBeEqual": "Teams cannot face each other!",
       "BestOf": "Best of ",
@@ -120,7 +118,10 @@
       "MapSidesTeam2CT": "Team 2 Starts CT",
       "MapSidesCT": "Starts CT",
       "MapSidesKnife": "Teams Knife For Sides",
-      "Wingman": "Wingman Match?"
+      "Wingman": "Wingman Match?",
+      "FormSeason": "Select a Tournament",
+      "SeasonLabel": "Tournament",
+      "SeasonNote": "No tournament to select? Then just press next!"
     },
     "PlayerStats": {
       "Kills": "Kills",
@@ -161,38 +162,13 @@
       "RefreshData": "Stats will refresh in {sec} seconds.",
       "RefreshForce": "Force Refresh"
     },
-    "Seasons": {
-      "Title": "Seasons/Tournaments",
-      "New": "New Season",
-      "NotFinished": "Ongoing",
-      "Name": "Name",
-      "Dates": "Date Range",
-      "DateTitle": "Season Dates",
-      "CvarHint": "These values will be brought as defaults in EVERY match.",
-      "ID": "ID",
-      "StartTitle": "Start Date (YYYY/MM/DD)",
-      "EndTitle": "End Date (YYYY/MM/DD)",
-      "NewFormTitle": "Create New Season/Tournament",
-      "EditFormTitle": "Edit Season/Tournament Info",
-      "SeasonCreated": "Season inserted successfully!",
-      "SeasonUpdated": "Season updated successfully!",
-      "SeasonDeleted": "Season deleted successfully!",
-      "DeleteConfirmation": "Are you sure you wish to remove this season?",
-      "DeleteExplain": "This will remove all match associations to the season.",
-      "ImportSeason": "Import",
-      "Import": "Import From Challonge",
-      "ImportExplanation": "Tournament ID (e.g. 10230) or URL (e.g. 'single_elim' for challonge.com/single_elim). If assigned to a subdomain, URL format must be :subdomain-:tournament_url (e.g. 'test-mytourney' for test.challonge.com/mytourney)",
-      "ImportUrl": "Challonge URL",
-      "ImportTeams": "Import Teams?",
-      "ImportError": "Error importing season. Please ensure the Challonge URL is correct."
-    },
     "Matches": {
       "YourMatches": "Your matches",
       "AllMatches": "All matches",
       "MatchID": "Match ID",
       "Team1": "Team 1",
       "Team2": "Team 2",
-      "Status": "Status",
+      "Status": "Match Status",
       "Server": "Server",
       "Owner": "Owner",
       "DeleteButton": "Delete My Cancelled Matches",
@@ -210,7 +186,7 @@
       "Servers": "Public Servers added",
       "Maps": "Maps with stats saved",
       "Players": "Unique Players",
-      "Seasons": "Seasons"
+      "Seasons": "Tournaments"
     },
     "MyServers": {
       "NoServersFound": "No servers found.",
@@ -375,6 +351,32 @@
       "company": "Phlex Plexico",
       "metrics": "Metrics",
       "powered": "Powered by Steam"
+    },
+    "Seasons": {
+      "Title": "Tournaments/Tournaments",
+      "New": "New Tournament",
+      "NotFinished": "Ongoing",
+      "Name": "Name",
+      "Dates": "Date Range",
+      "DateTitle": "Tournament Dates",
+      "CvarHint": "These values will be brought as defaults in EVERY match.",
+      "ID": "ID",
+      "StartTitle": "Start Date (YYYY/MM/DD)",
+      "EndTitle": "End Date (YYYY/MM/DD)",
+      "NewFormTitle": "New Tournament Details",
+      "EditFormTitle": "Edit Tournament Details",
+      "SeasonCreated": "Tournament created successfully.",
+      "SeasonUpdated": "Tournament updated successfully.",
+      "SeasonDeleted": "Successfully deleted Tournament.",
+      "DeleteConfirmation": "Are you sure you wish to remove this tournament?",
+      "DeleteExplain": "This will remove all match associations to the tournament.",
+      "ImportTournament": "Import",
+      "ImportSeason": "Import Tournament",
+      "Import": "Import From Challonge",
+      "ImportExplanation": "Tournament ID (e.g. 10230) or URL (e.g. 'single_elim' for challonge.com/single_elim). If assigned to a subdomain, URL format must be :subdomain-:tournament_url (e.g. 'test-mytourney' for test.challonge.com/mytourney)",
+      "ImportUrl": "Challonge URL",
+      "ImportTeams": "Import Teams?",
+      "ImportError": "Error importing tournament. Please ensure the Challonge URL is correct."
     }
   },
   "fr": {
@@ -389,8 +391,6 @@
       "CreateTeam": "Créer une équipe",
       "MyServers": "Mes Serveurs",
       "AddServer": "Ajouter un nouveau serveur",
-      "AllSeasons": "Toutes les saisons",
-      "MySeasons": "Ma saison",
       "Logout": "Déconnexion",
       "DarkMode": "Action le mode sombre",
       "PlayerLeader": "Classement des joueurs",
@@ -398,7 +398,10 @@
       "Welcome": "Bienvenue",
       "Teams": "Équipes",
       "Matches": "Matchs",
-      "Seasons": "Saisons"
+      "Seasons": "Saisons",
+      "AllSeasons": "Toutes les saisons",
+      "MySeasons": "Ma saison",
+      "TeamLeader": "Classement des équipes"
     },
     "Login": {
       "title": "S'identifier / S'incrire",
@@ -459,7 +462,6 @@
     },
     "CreateMatch": {
       "FormServer": "Selectionner un serveur",
-      "FormSeason": "Selectionner une saison",
       "ServerSelect": "Serveur",
       "FormDetail": "Remplissez les details du match",
       "FormError": "Vous ne devriez pas être ici !",
@@ -475,8 +477,6 @@
       "MessageRegisterSuccess": "Match enregistré avec succés.",
       "ServerLabel": "Serveur",
       "ServerNote": "Vous ne trouvez pas ce que vous cherchez ? Crééez-le et selectionnez le !",
-      "SeasonLabel": "Saison",
-      "SeasonNote": "Pas de saison à sélectionner ? Alors cliquez juste sur suivant !",
       "TeamRequired": "Une équipe est requise.",
       "TeamCannotBeEqual": "Les équipes doivent être distinctes !",
       "BestOf": "Best of ",
@@ -498,7 +498,10 @@
       "MapSidesTeam2CT": "Equipe 2 démarre en CT",
       "MapSidesCT": "démarre en CT",
       "MapSidesKnife": "Coté décidé par un round au couteau",
-      "Wingman": "Match d'ailier ?"
+      "Wingman": "Match d'ailier ?",
+      "FormSeason": "Selectionner une saison",
+      "SeasonLabel": "Saison",
+      "SeasonNote": "Pas de saison à sélectionner ? Alors cliquez juste sur suivant !"
     },
     "PlayerStats": {
       "Kills": "Kills",
@@ -538,31 +541,6 @@
       "MVP": "MVPs",
       "RefreshData": "Les statistiques vont être mises à jour dans {sec} secondes.",
       "RefreshForce": "Forcer la mise à jour"
-    },
-    "Seasons": {
-      "Title": "Saisons/Tournois",
-      "New": "Nouvelle",
-      "NotFinished": "En cours",
-      "Name": "Nom",
-      "Dates": "Plage de dates",
-      "DateTitle": "Dates de la saison",
-      "CvarHint": "Ces valeurs seront utilisées par défaut pour CHAQUE match.",
-      "ID": "ID",
-      "StartTitle": "Date de début",
-      "EndTitle": "Date de fin",
-      "NewFormTitle": "Créer une nouvelle saison",
-      "EditFormTitle": "Editer les infos de la saison",
-      "SeasonCreated": "Saison créée avec succés !",
-      "SeasonUpdated": "Saison mis à jour avec succés !",
-      "SeasonDeleted": "Saison supprimée avec succés !",
-      "DeleteConfirmation": "Êtes-vous sûr de vouloir supprimer cette saison?",
-      "DeleteExplain": "Cela supprimera tous les matchs associés à cette saison.",
-      "ImportSeason": "Importer",
-      "Import": "Importer depuis Challonge",
-      "ImportExplanation": "Tournament ID (e.g. 10230) ou URL (e.g. 'single_elim' for challonge.com/single_elim). Si assigné à un sous-domaine, le format de l'URL doit être :sousdomaine-:tournament_url (e.g. 'test-mytourney' pour test.challonge.com/mytourney)",
-      "ImportUrl": "URL Challonge",
-      "ImportTeams": "Importer les équipes ?",
-      "ImportError": "Erreur durant l'import de la saison. Assurez-vous que l'URL Challonge est correcte."
     },
     "Matches": {
       "YourMatches": "Vos matchs",
@@ -753,6 +731,32 @@
       "company": "Phlex Plexico",
       "metrics": "Metrics",
       "powered": "Powered by Steam"
+    },
+    "Seasons": {
+      "Title": "Saisons/Tournois",
+      "New": "Nouvelle",
+      "NotFinished": "En cours",
+      "Name": "Nom",
+      "Dates": "Plage de dates",
+      "DateTitle": "Dates de la saison",
+      "CvarHint": "Ces valeurs seront utilisées par défaut pour CHAQUE match.",
+      "ID": "ID",
+      "StartTitle": "Date de début",
+      "EndTitle": "Date de fin",
+      "NewFormTitle": "Nouveau détail de tournoi",
+      "EditFormTitle": "Editer le détail du tournoi",
+      "SeasonCreated": "Tournoi créé avec succès.",
+      "SeasonUpdated": "Tournoi mis à jour avec succès.",
+      "SeasonDeleted": "Tournoi supprimé avec succès.",
+      "DeleteConfirmation": "Êtes-vous sûr de vouloir supprimer cette saison?",
+      "DeleteExplain": "Cela supprimera tous les matchs associés à cette saison.",
+      "ImportTournament": "Importer",
+      "ImportSeason": "Importer le tournoi",
+      "Import": "Importer depuis Challonge",
+      "ImportExplanation": "Tournament ID (e.g. 10230) ou URL (e.g. 'single_elim' for challonge.com/single_elim). Si assigné à un sous-domaine, le format de l'URL doit être :sousdomaine-:tournament_url (e.g. 'test-mytourney' pour test.challonge.com/mytourney)",
+      "ImportUrl": "URL Challonge",
+      "ImportTeams": "Importer les équipes ?",
+      "ImportError": "Erreur durant l'import de la saison. Assurez-vous que l'URL Challonge est correcte."
     }
   },
   "jp": {
@@ -767,8 +771,6 @@
       "CreateTeam": "チーム作成",
       "MyServers": "あなたのサーバー",
       "AddServer": "サーバーの追加",
-      "AllSeasons": "オールシーズンズ",
-      "MySeasons": "私の季節",
       "Logout": "ログアウト",
       "DarkMode": "ダークモードを切り替えます",
       "PlayerLeader": "プレイヤーリーダーボード",
@@ -776,7 +778,10 @@
       "Welcome": "ようこそ",
       "Teams": "チーム",
       "Matches": "マッチ",
-      "Seasons": "シーズン"
+      "Seasons": "シーズン",
+      "AllSeasons": "オールシーズンズ",
+      "MySeasons": "私の季節",
+      "TeamLeader": "チームリーダーボード"
     },
     "Login": {
       "title": "ログイン/登録",
@@ -837,7 +842,6 @@
     },
     "CreateMatch": {
       "FormServer": "サーバー",
-      "FormSeason": "季節を選ぶ",
       "ServerSelect": "サーバ",
       "FormDetail": "マッチの詳細を記入",
       "FormError": "ここにいてはいけない！",
@@ -853,8 +857,6 @@
       "MessageRegisterSuccess": "マッププール",
       "ServerLabel": "サーバ",
       "ServerNote": "お探しのものが見つかりませんか？作成してから選択してください",
-      "SeasonLabel": "シーズン",
-      "SeasonNote": "選択するシーズンがありませんか？それなら次のボタンを押してください",
       "TeamRequired": "チームが必要です。",
       "TeamCannotBeEqual": "チーム同士で向き合うことはできません!",
       "BestOf": "ベストオブ ",
@@ -872,7 +874,10 @@
       "MapSidesTeam2CT": "チーム2はCTとしてスタート",
       "MapSidesCT": "はCTとしてスタート",
       "MapSidesKnife": "サイド決定のためにナイフで戦う",
-      "Wingman": "ウィングマン・マッチ？"
+      "Wingman": "ウィングマン・マッチ？",
+      "FormSeason": "季節を選ぶ",
+      "SeasonLabel": "シーズン",
+      "SeasonNote": "選択するシーズンがありませんか？それなら次のボタンを押してください"
     },
     "PlayerStats": {
       "Kills": "キルズ",
@@ -912,31 +917,6 @@
       "MVP": "M V P",
       "RefreshData": "統計情報は{sec}秒後に更新されます。",
       "RefreshForce": "強制リフレッシュ"
-    },
-    "Seasons": {
-      "Title": "シーズンズ/トーナメント",
-      "New": "新しい季節",
-      "NotFinished": "継続中",
-      "Name": "名前",
-      "Dates": "日付範囲",
-      "DateTitle": "シーズンの日付",
-      "CvarHint": "これらの値は、すべてのマッチにおいてデフォルト値として持ち込まれます。",
-      "ID": "身分証明書",
-      "StartTitle": "開始日 (YYYY/MM/DD)",
-      "EndTitle": "終了日 (YYYY/MM/DD)",
-      "NewFormTitle": "新しいシーズンの作成/トーナメント",
-      "EditFormTitle": "エディットシーズン/トーナメント 情報",
-      "SeasonCreated": "シーズンの挿入に成功しました",
-      "SeasonUpdated": "シーズンの更新に成功しました",
-      "SeasonDeleted": "シーズンの削除に成功しました",
-      "DeleteConfirmation": "今の季節に外しても大丈夫ですか？",
-      "DeleteExplain": "これにより、今シーズンの試合関連がすべて削除されます。",
-      "ImportSeason": "Challongeからのインポート",
-      "Import": "輸入",
-      "ImportExplanation": "トーナメントID（例：10230）またはURL（例：challonge.com/single_elimの場合は「single_elim」）です。サブドメインに割り当てられた場合、URLの形式は :subdomain-:tournament_url でなければなりません (例: 'test-mytourney' は test.challonge.com/mytourney の場合)。",
-      "ImportUrl": "チャロンギURL",
-      "ImportTeams": "輸入チーム？",
-      "ImportError": "シーズンのインポートにエラーが発生しました。ChallongeのURLが正しいかどうか確認してください。"
     },
     "Matches": {
       "YourMatches": "あなたのマッチ",
@@ -991,10 +971,9 @@
       "Get5Help": "CS2サーバーの場合、Get5互換モードを備えた <a href=\"https://shobhit-pathak.github.io/MatchZy/get5/\">MatchZy</a> の使用をお勧めします。 サーバーがオンラインで、MatchZyが正しく設定されていることを確認してください。<br>従来のCS:GOサーバーの場合、Get5プラグインがインストールされ、sv_logechoが有効になっていることを確認してください。",
       "FormDisplayName": "表示名",
       "FormServerIP": "ホスト名",
-      "FormServerHint": "URLにすることもできます。",
       "FormServerPort": "サーバーポート",
-      "FormGOTVPort": "GOTVポート",
       "FormRCONPassword": "RCONパスワード",
+      "FormGOTVPort": "GOTVポート",
       "FormPublicServer": "パブリックサーバー？",
       "MessageRegisterSuccess": "サーバーの登録に成功しました。",
       "MessageeEditSuccess": "サーバーの編集に成功しました。",
@@ -1033,7 +1012,8 @@
     },
     "Teams": {
       "YourTeams": "あなたのチーム",
-      "NoTeamFound": "チームが見つかりませんでした。"
+      "NoTeamFound": "チームが見つかりませんでした。",
+      "Title": "チーム"
     },
     "User": {
       "Name": "名前",
@@ -1125,6 +1105,31 @@
       "company": "Phlex Plexico",
       "metrics": "メトリック",
       "powered": "Powered by Steam"
+    },
+    "Seasons": {
+      "Title": "シーズンズ/トーナメント",
+      "New": "新しい季節",
+      "NotFinished": "継続中",
+      "Name": "名前",
+      "Dates": "日付範囲",
+      "DateTitle": "シーズンの日付",
+      "CvarHint": "これらの値は、すべてのマッチにおいてデフォルト値として持ち込まれます。",
+      "ID": "身分証明書",
+      "StartTitle": "開始日 (YYYY/MM/DD)",
+      "EndTitle": "終了日 (YYYY/MM/DD)",
+      "NewFormTitle": "新しいトーナメントの詳細",
+      "EditFormTitle": "トーナメントの詳細の編集",
+      "SeasonCreated": "トーナメントの作成に成功しました。",
+      "SeasonUpdated": "トーナメントの更新に成功しました。",
+      "SeasonDeleted": "トーナメントの削除に成功しました。",
+      "DeleteConfirmation": "このトーナメントを削除しますか?",
+      "DeleteExplain": "これにより、今シーズンの試合関連がすべて削除されます。",
+      "ImportTournament": "Challongeからのインポート",
+      "Import": "輸入",
+      "ImportExplanation": "トーナメントID（例：10230）またはURL（例：challonge.com/single_elimの場合は「single_elim」）です。サブドメインに割り当てられた場合、URLの形式は :subdomain-:tournament_url でなければなりません (例: 'test-mytourney' は test.challonge.com/mytourney の場合)。",
+      "ImportUrl": "チャロンギURL",
+      "ImportTeams": "輸入チーム？",
+      "ImportError": "シーズンのインポートにエラーが発生しました。ChallongeのURLが正しいかどうか確認してください。"
     }
   }
 }

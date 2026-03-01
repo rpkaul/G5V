@@ -19,7 +19,11 @@
             :key="i"
             @click="item.apiCall()"
           >
-            <v-list-item-icon v-if="item.icon"><v-icon color="primary">{{ item.icon }}</v-icon></v-list-item-icon>
+            <v-list-item-icon v-if="item.icon"
+              ><v-icon color="primary">{{
+                item.icon
+              }}</v-icon></v-list-item-icon
+            >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -29,7 +33,11 @@
             :key="i"
             @click="item.apiCall()"
           >
-            <v-list-item-icon v-if="item.icon"><v-icon color="primary">{{ item.icon }}</v-icon></v-list-item-icon>
+            <v-list-item-icon v-if="item.icon"
+              ><v-icon color="primary">{{
+                item.icon
+              }}</v-icon></v-list-item-icon
+            >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -51,7 +59,9 @@
         >
           <div class="d-flex flex-column align-center">
             <v-icon size="28" class="mb-1">{{ btn.icon }}</v-icon>
-            <span class="text-caption font-weight-black text-uppercase">{{ btn.title }}</span>
+            <span class="text-caption font-weight-black text-uppercase">{{
+              btn.title
+            }}</span>
           </div>
         </v-btn>
         
@@ -80,24 +90,26 @@
       </div>
     </template>
 
-    <v-bottom-sheet v-model="responseSheet" inset persistent>
-      <v-sheet class="text-center glass-card" height="200px">
-        <v-btn
-          class="mt-6"
-          text
-          color="success"
-          @click="
-            responseSheet = !responseSheet;
-            response = '';
-            $emit('force-the-reload', true);
-          "
-        >
-          close
-        </v-btn>
-        <div class="my-3 white--text headline">
-          {{ response }}
-        </div>
-      </v-sheet>
+    <v-bottom-sheet v-model="responseSheet" inset persistent scrollable>
+      <v-card class="glass-card">
+        <v-card-text class="pt-4" style="max-height: 500px; overflow-y: auto; overflow-x: auto;">
+          <pre class="white--text text-left pa-3" style="font-family: Consolas, monospace; white-space: pre-wrap; font-size: 0.85rem; background: rgba(0, 0, 0, 0.6); border-radius: 8px; border: 1px solid rgba(0, 242, 255, 0.2);">{{ response }}</pre>
+        </v-card-text>
+        <v-card-actions class="justify-center pb-4">
+          <v-btn
+            color="success"
+            text
+            class="font-weight-bold"
+            @click="
+              responseSheet = !responseSheet;
+              response = '';
+              $emit('force-the-reload', true);
+            "
+          >
+            close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-bottom-sheet>
     <v-dialog v-model="cancelDialog" persistent max-width="600px">
       <v-card>
@@ -147,10 +159,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="addDialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="font-orbitron primary--text headline title-glow">
+    <v-dialog v-model="addDialog" persistent max-width="900px">
+      <v-card class="glass-card">
+        <v-card-title class="pb-2">
+          <span class="font-orbitron primary--text headline title-glow" style="word-break: break-word;">
             Add Player to {{ matchInfo.team1_name }} / {{ matchInfo.team2_name }}
           </span>
         </v-card-title>
@@ -188,25 +200,31 @@
             </v-container>
           </v-form>
         </v-card-text>
-        <v-card-actions class="pa-6">
-          <v-btn color="grey lighten-1" text @click="addDialog = false" class="font-weight-bold">
-            {{ $t("misc.Cancel") }}
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="secondary" depressed class="black--text font-weight-black px-4 rounded-lg" @click="addPlayerToServer('spec')">
-            {{ $t("MatchAdmin.AddToSpec") }}
-          </v-btn>
-          <v-btn color="primary" depressed class="black--text font-weight-black px-4 rounded-lg" @click="addPlayerToServer('team1')">
-            Add to {{ matchInfo.team1_name }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            depressed
-            class="black--text font-weight-black px-4 rounded-lg"
-            @click="addPlayerToServer('team2')"
-          >
-            Add to {{ matchInfo.team2_name }}
-          </v-btn>
+        <v-card-actions class="pa-6 d-flex flex-column align-stretch">
+          <v-row dense class="w-100 mb-2 mx-0">
+            <v-col cols="12" sm="6" class="px-2">
+              <v-btn block color="primary" depressed class="black--text font-weight-black rounded-lg neon-btn-small" @click="addPlayerToServer('team1')">
+                Add to {{ matchInfo.team1_name }}
+              </v-btn>
+            </v-col>
+            <v-col cols="12" sm="6" class="px-2">
+              <v-btn block color="primary" depressed class="black--text font-weight-black rounded-lg neon-btn-small" @click="addPlayerToServer('team2')">
+                Add to {{ matchInfo.team2_name }}
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row dense class="w-100 mx-0">
+            <v-col cols="12" sm="6" class="px-2">
+              <v-btn block color="secondary" depressed class="black--text font-weight-black rounded-lg neon-btn-small" @click="addPlayerToServer('spec')">
+                {{ $t("MatchAdmin.AddToSpec") }}
+              </v-btn>
+            </v-col>
+            <v-col cols="12" sm="6" class="px-2">
+              <v-btn block color="error" depressed class="font-weight-black rounded-lg neon-btn-small" @click="addDialog = false">
+                {{ $t("misc.Cancel") }}
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-actions>
       </v-card>
     </v-dialog>
