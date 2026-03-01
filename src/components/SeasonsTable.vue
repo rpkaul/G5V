@@ -728,7 +728,7 @@ export default {
             seasonCvars[obj] = seasonCvars[obj] == 0 ? false : true;
             this.seasonDefaults[obj] = seasonCvars[obj];
           } else if (obj === "map_sides") {
-            this.seasonDefaults[obj] = seasonCvars[obj].split(" ");
+            this.seasonDefaults[obj] = seasonCvars[obj].split(" ").map(side => side === "team1_t" ? "team2_ct" : side);
           } else this.seasonDefaults[obj] = seasonCvars[obj];
         }
       }

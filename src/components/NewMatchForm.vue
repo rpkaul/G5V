@@ -461,7 +461,7 @@ export default {
           this.newMatchData.map_sides =
             !seasonCvars.map_sides || seasonCvars.map_sides.length < 1
               ? []
-              : seasonCvars.map_sides.trim().split(" ");
+              : seasonCvars.map_sides.trim().split(" ").map(side => side === "team1_t" ? "team2_ct" : side);
           this.newMatchData.wingman =
             seasonCvars.wingman == null || seasonCvars.wingman == 0
               ? false
