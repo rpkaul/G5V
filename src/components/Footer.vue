@@ -5,7 +5,9 @@
         <v-layout wrap align-center>
           <!-- Brand & Info -->
           <v-flex xs12 sm4 class="text-center text-sm-left mb-4 mb-sm-0">
-            <div class="primary--text font-weight-black headline mb-1 font-orbitron title-glow">
+            <div
+              class="primary--text font-weight-black headline mb-1 font-orbitron title-glow"
+            >
               {{ brandingName }}
             </div>
             <div class="caption grey--text text--lighten-1 letter-spacing-1">
@@ -16,7 +18,10 @@
           <!-- Copyright -->
           <v-flex xs12 sm8 class="text-center text-sm-right mt-4 mt-sm-0">
             <div class="caption grey--text letter-spacing-1">
-              &copy; {{ new Date().getFullYear() }} — <span class="primary--text font-weight-black">{{ $t("Footer.company") }}</span>
+              &copy; {{ new Date().getFullYear() }} —
+              <span class="primary--text font-weight-black">{{
+                $t("Footer.company")
+              }}</span>
             </div>
           </v-flex>
         </v-layout>
@@ -39,8 +44,8 @@ export default {
   },
   computed: {
     brandingName() {
-      return this.$t("Navbar.BrandingName") !== "Navbar.BrandingName" 
-        ? this.$t("Navbar.BrandingName") 
+      return this.$t("Navbar.BrandingName") !== "Navbar.BrandingName"
+        ? this.$t("Navbar.BrandingName")
         : "G5V";
     }
   },

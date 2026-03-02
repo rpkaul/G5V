@@ -77,10 +77,10 @@
           <div class="pa-8">
             <v-row>
               <v-col cols="12" md="6">
-                <v-select
+                <v-autocomplete
                   v-model="newMatchData.team1_id"
                   :items="teams"
-                  item-text="name"
+                  :item-text="item => `${item.name} ( #${item.id} by ${item.owner || item.user_id} )`"
                   item-value="id"
                   :rules="[
                     v => !!v || $t('CreateMatch.TeamRequired'),
@@ -96,10 +96,10 @@
                 />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select
+                <v-autocomplete
                   v-model="newMatchData.team2_id"
                   :items="teams"
-                  item-text="name"
+                  :item-text="item => `${item.name} ( #${item.id} by ${item.owner || item.user_id} )`"
                   item-value="id"
                   :rules="[
                     v => !!v || $t('CreateMatch.TeamRequired'),

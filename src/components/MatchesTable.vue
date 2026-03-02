@@ -209,7 +209,13 @@ export default {
           (match.cancelled == 0 || match.cancelled == null) &&
           match.start_time != null
         ) {
-          matchString = `Live, ${team1Score}:${team2Score} vs ${match.team2_string}`;
+          if (match.max_maps > 1) {
+            let t1MapScore = match.team1_mapscore == undefined ? 0 : match.team1_mapscore;
+            let t2MapScore = match.team2_mapscore == undefined ? 0 : match.team2_mapscore;
+            matchString = `Live, ${team1Score}-(${t1MapScore}:${t2MapScore})-${team2Score} vs ${match.team2_string}`;
+          } else {
+            matchString = `Live, ${team1Score}:${team2Score} vs ${match.team2_string}`;
+          }
         } else if (team1Score < team2Score) {
           matchString = `Lost, ${team1Score}:${team2Score} vs ${match.team2_string}`;
         } else if (team1Score > team2Score) {

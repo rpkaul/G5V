@@ -162,7 +162,18 @@ export default {
               match.team1_id == null ? match.team2_id : match.team1_id;
             const statusRes = await this.GetMatchResult(teamId, match.id);
             match.owner = ownerRes.name;
-            match.match_status = statusRes;
+            
+            // Override Live multi-map status formatting locally
+            if (statusRes.includes("Live") && match.max_maps > 1) {
+              let t1Score = match.team1_score == undefined ? 0 : match.team1_score;
+              let t2Score = match.team2_score == undefined ? 0 : match.team2_score;
+              let t1MapScore = match.team1_mapscore == undefined ? 0 : match.team1_mapscore;
+              let t2MapScore = match.team2_mapscore == undefined ? 0 : match.team2_mapscore;
+              match.match_status = `Live, ${t1Score}-(${t1MapScore}:${t2MapScore})-${t2Score} vs ${match.team2_string}`;
+            } else {
+              match.match_status = statusRes;
+            }
+            
             if (match.cancelled == 1) this.isThereCancelledMatches = true;
             this.matches.push(match);
           });
